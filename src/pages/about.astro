@@ -1,0 +1,77 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
+
+const aboutEntry = await getEntry('about', 'me');
+if (!aboutEntry) {
+  throw new Error("Could not find about page entry.");
+}
+
+const { title, name, role, avatarText, github, twitter, linkedin, email, interests } = aboutEntry.data;
+const { Content } = await aboutEntry.render();
+---
+<Layout title="About | Agentic Building Diaries">
+  <Navbar />
+  <main class="flex-1 w-full max-w-4xl mx-auto px-6 py-20">
+    <div class="bg-card border border-border/80 rounded-[24px] p-8 md:p-12 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+      <article class="prose max-w-none">
+        <div class="mb-8 pb-6 border-b border-border/60">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-accent-background text-accent text-xs font-bold tracking-wider uppercase rounded-full border border-accent/10 mb-4">
+            ⚙️ BIOGRAPHY
+          </span>
+          <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-primary mb-4 leading-tight">
+            {title}
+          </h1>
+          <div class="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
+            <span>By a Data Person</span>
+            <span class="text-xs">•</span>
+            <span>May 26, 2026</span>
+            <span class="text-xs">•</span>
+            <span>6 min read</span>
+          </div>
+        </div>
+        
+        <Content />
+        
+        {interests && interests.length > 0 && (
+          <div class="mt-12 pt-8 border-t border-border/60">
+            <h3 class="text-xl font-bold text-primary mb-4">Core Interests</h3>
+            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 list-none p-0">
+              {interests.map((interest: string) => (
+                <li class="relative pl-6 mb-2">
+                  {interest}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Social Links at bottom */}
+        <div class="flex items-center gap-4 pt-8 mt-12 border-t border-border/60 justify-center">
+          {github && (
+            <a href={github} target="_blank" class="p-2.5 rounded-full bg-background border border-border hover:border-foreground text-muted-foreground hover:text-foreground transition-all duration-200">
+              <Github className="w-5 h-5" />
+            </a>
+          )}
+          {twitter && (
+            <a href={twitter} target="_blank" class="p-2.5 rounded-full bg-background border border-border hover:border-foreground text-muted-foreground hover:text-foreground transition-all duration-200">
+              <Twitter className="w-5 h-5" />
+            </a>
+          )}
+          {linkedin && (
+            <a href={linkedin} target="_blank" class="p-2.5 rounded-full bg-background border border-border hover:border-foreground text-muted-foreground hover:text-foreground transition-all duration-200">
+              <Linkedin className="w-5 h-5" />
+            </a>
+          )}
+          {email && (
+            <a href={`mailto:${email}`} class="p-2.5 rounded-full bg-background border border-border hover:border-foreground text-muted-foreground hover:text-foreground transition-all duration-200">
+              <Mail className="w-5 h-5" />
+            </a>
+          )}
+        </div>
+      </article>
+    </div>
+  </main>
+</Layout>

@@ -1,0 +1,24 @@
+---
+const pathname = new URL(Astro.request.url).pathname;
+---
+<header class="sticky top-0 z-50 w-full h-16 border-b border-border/40 bg-background/60 backdrop-blur-[12px] flex items-center justify-center">
+  <div class="container flex h-full max-w-5xl items-center justify-between px-6">
+    <a href="/" class="font-bold text-lg tracking-tight text-foreground">
+      Agentic Building Diaries
+    </a>
+    <nav class="flex items-center space-x-6 text-sm font-medium">
+      <a href="/" class={`transition-colors hover:text-foreground ${pathname === "/" ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
+        Home
+      </a>
+      <a href="/blog" class={`transition-colors hover:text-foreground ${pathname.startsWith("/blog") ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
+        Blog
+      </a>
+      <a href="/about" class={`transition-colors hover:text-foreground ${pathname.startsWith("/about") ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
+        About
+      </a>
+      <a href="/projects" class={`transition-colors hover:text-foreground ${pathname.startsWith("/projects") ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
+        Projects
+      </a>
+    </nav>
+  </div>
+</header>

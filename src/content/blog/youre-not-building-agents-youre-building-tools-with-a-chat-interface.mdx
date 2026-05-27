@@ -1,0 +1,49 @@
+---
+title: "You're Not Building Agents. You're Building Tools With a Chat Interface."
+description: "On what 'agentic' actually means and why the architecture decisions you're making right now will matter later."
+date: "2026-05-08"
+tags: ["ai", "agents", "software-engineering", "architecture"]
+category: "🤖 Agentic Building Diaries"
+---
+
+Most things being called AI agents aren't agents. They're LLMs with tool access and a while loop. I don't say this to be dismissive — I say it because the distinction matters, and if you're building in this space you should be honest with yourself about where on the spectrum you actually are.
+
+I'm going to be honest about where I am too.
+
+The pattern I see constantly: someone wraps Claude or GPT with a handful of tool definitions, adds a loop that runs until the model says it's done, and calls it an agent. It works for demos. It works for simple tasks. It falls apart the moment you add scale, complexity, or the expectation that the system should learn anything from what it just did.
+
+### What Breaks First: System Prompts and Orchestration Limits
+
+If you're encoding your workflow logic in system prompts, you will hit a wall. In practice, LLMs start taking shortcuts around turn seven to twelve in long orchestration sequences. The model is trying to be helpful — it pattern-matches to what looks like a reasonable completion and stops following the actual process you specified. The longer and more complex your system prompt, the worse this gets. Workflow logic belongs in enforced process structure, not in prose instructions to a language model.
+
+### Moving from God Agents to Coordinator-Specialist Patterns
+
+The second thing that breaks is scope. The "god agent" pattern — one agent, all the tools, everything in one context — seems simple until the system prompt bloats to thousands of tokens and behavior becomes unpredictable. You can't debug it. You can't reason about what the model has access to at any given moment. You can't scope permissions to what a specific task actually needs.
+
+The fix is coordinator-specialist architecture. Separate the agent that decides what to do from the agents that do specific things. Give each specialist only the tools it needs for its scope. This isn't just about token efficiency — it's about building something you can actually reason about and maintain.
+
+Third: progressive disclosure of capabilities. You don't need to load everything the agent might ever need at initialization. Tools should be available on demand, loaded when relevant, not as a flat list that every call has to reason through. This is what skill composition looks like in practice — the agent discovers what it can do as it needs to, rather than starting every session with an overwhelming menu.
+
+### The Four Pillars of True Agentic Design
+
+What makes something actually agentic, in my view, comes down to four things.
+
+One: the system can spawn and coordinate other agents. Not just call tools — spawn agents with their own context, their own scope, their own tasks, and coordinate their outputs.
+
+Two: permissions are scoped. No agent has god-mode access to everything. Each agent has exactly the capabilities it needs for what it's doing.
+
+Three: the system improves post-task. Not just executes and forgets. Something happens after the task completes that makes the next execution better — updated context, refined skills, logged learnings.
+
+Four: the process is enforced, not just reasoned about. The workflow is structural, not a hope that the LLM will follow your prompt.
+
+### Pragmatism vs. Purity: The NanoClaw Philosophy
+
+Where does my own setup sit? I'm honest about this: NanoClaw is lightweight by design. Moka is not a full agentic stack by the definition above. I have scheduled tasks, tool access, file-based memory, and some coordination between components. I don't have autonomous agent spawning at scale or post-task skill evolution baked in deeply — though that's the direction I'm building toward.
+
+That's a deliberate choice, not a gap I haven't noticed. The lightweight architecture is maintainable, debuggable, and runs reliably. I can understand what it's doing. I can fix it when it breaks. Those properties matter more to me right now than theoretical agentic purity.
+
+But here's the thing: the architecture decisions you make now constrain what you can build later. If you're hard-coding workflow logic in system prompts, refactoring that later is painful. If you're building a god agent, decomposing it is painful. If you have no post-task learning loop, adding one requires rethinking how state flows through your system.
+
+The question worth asking isn't "is this an agent?" It's "when this breaks at scale — and it will — will I be able to fix it?"
+
+Build accordingly.

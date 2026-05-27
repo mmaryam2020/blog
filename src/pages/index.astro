@@ -1,0 +1,96 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { Search } from '../components/ui/Search';
+import { getUnifiedPosts } from '../lib/posts';
+import { Github, Linkedin, Mail } from 'lucide-react';
+
+const sortedPosts = await getUnifiedPosts();
+const latestPosts = sortedPosts.slice(0, 3);
+
+// Helper to calculate reading time
+const getReadingTime = (body: string) => {
+  const wordsPerMinute = 200;
+  const words = body.trim().split(/\s+/).length;
+  return Math.ceil(words / wordsPerMinute).toString();
+};
+---
+<Layout title="Agentic Building Diaries">
+  <Navbar />
+  <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-20 md:py-32">
+    {/* Hero Section */}
+    <section class="flex flex-col items-center text-center mb-24">
+      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-primary mb-6 leading-tight">
+        Agentic Building Diaries
+      </h1>
+      <p class="text-lg md:text-xl text-muted-foreground max-w-2xl font-medium leading-relaxed mb-8">
+        Explore technical case studies, fitness telemetry pipelines, and data engineering logs in high fidelity.
+      </p>
+      
+      {/* Social Links under Intro */}
+      <div class="flex flex-wrap justify-center gap-4">
+        <a
+          href="https://github.com/mmaryam2020"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-card border border-border rounded-full hover:border-foreground text-foreground hover:shadow-sm transition-all duration-200 text-sm font-semibold"
+        >
+          <Github className="w-4 h-4 text-muted-foreground" />
+          <span>GitHub</span>
+        </a>
+        <a
+          href="https://www.linkedin.com/in/maryammo/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-card border border-border rounded-full hover:border-foreground text-foreground hover:shadow-sm transition-all duration-200 text-sm font-semibold"
+        >
+          <Linkedin className="w-4 h-4 text-muted-foreground" />
+          <span>LinkedIn</span>
+        </a>
+        <a
+          href="mailto:mindmoation@hexora.ca"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-card border border-border rounded-full hover:border-foreground text-foreground hover:shadow-sm transition-all duration-200 text-sm font-semibold"
+        >
+          <Mail className="w-4 h-4 text-muted-foreground" />
+          <span>Email Logs</span>
+        </a>
+      </div>
+    </section>
+
+    {/* Search Section */}
+    <section class="flex flex-col items-center mb-24">
+      <Search client:load />
+    </section>
+
+    {/* Latest Writing */}
+    <section class="mb-24">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl font-bold tracking-tight text-primary">Latest Writing</h2>
+        <a href="/blog" class="text-sm font-medium text-accent hover:underline">
+          View all
+        </a>
+      </div>
+      
+      {latestPosts.length === 0 ? (
+        <div class="text-center py-20 bg-card rounded-[24px] border border-border/50">
+          <p class="text-muted-foreground">No posts found yet. Check back soon!</p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {latestPosts.map((post) => (
+            <ArticleCard
+              title={post.data.title}
+              description={post.data.description}
+              date={post.data.date}
+              readingTime={getReadingTime(post.body)}
+              tags={post.data.tags}
+              category={post.data.category}
+              href={`/blog/${post.slug}`}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  </main>
+</Layout>

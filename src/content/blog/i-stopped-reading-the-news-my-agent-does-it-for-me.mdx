@@ -1,0 +1,41 @@
+---
+title: "I Stopped Reading the News. My Agent Does It for Me."
+description: "On passive monitoring, alert logic, and why ADHD brains shouldn't be their own filters."
+date: "2026-05-05"
+tags: ["ai", "productivity", "adhd", "automation"]
+category: "🤖 Agentic Building Diaries"
+---
+
+I haven't opened a news tab in six weeks. I'm not on a digital detox. I'm not doing some mindfulness thing. I just built a system that reads the news for me, filters it, and surfaces what actually matters. Everything else gets logged and ignored.
+
+This is a solved problem if you're willing to build the infrastructure. Most people aren't. Most people are drowning in push notifications, algorithmic feeds, and the low-grade anxiety of feeling like they might be missing something. The solution isn't discipline. The solution is delegation.
+
+Let explain what I mean.
+
+### Logging vs. Alerting in Information Systems
+
+There's a pattern I keep coming back to in how I think about agent tooling: the difference between MCP inline tools — tools that run in the main conversation context — and subagent-scoped tools that run independently in their own context. It maps cleanly onto a distinction that matters a lot in information systems: logging versus alerting.
+
+Logging means record everything. Alerting means notify on signal.
+
+Most people's information diet is all alerting, no logging. Every app on their phone has notification permissions. Every newsletter lands in their inbox. The signal-to-noise ratio collapses and they start making decisions about what to pay attention to based on what's loudest, not what's important.
+
+My setup inverts this. Scheduled NanoClaw tasks run on a cadence — monitoring X/Twitter for relevant AI research, tracking product releases, watching for papers in specific areas. Everything gets captured. Almost nothing triggers a notification.
+
+### Designing Alert Logic and Passive Cadences
+
+The alert logic is the part that took me longest to design. What actually warrants interrupting me? I landed on something like: novel capability claims with code attached, API-breaking changes to tools I use, and anything that's getting enough signal from people I trust that it's clearly not noise. Everything else goes into a log file that I can query if I want to, but I don't have to.
+
+The honest part: this is hard to build well. The failure mode isn't missing things — it's getting over-alerted until you start ignoring the alerts, which puts you back where you started. I've tuned this system through multiple iterations and I still sometimes get batches of notifications that make me want to turn the whole thing off.
+
+What actually works is passive monitoring. The agent doesn't push to me; I pull from it when I want a briefing. There's a difference between "I will tell you when something matters" and "here is everything I found, go through it." The first is a system that respects your attention. The second is just outsourcing your inbox management.
+
+### Attention as a Finite Resource
+
+For an ADHD brain specifically, the passive monitoring model is almost medically necessary. My attention is a resource I have to protect. Every interruption has a cost. A system that checks things on my behalf and only escalates when the signal is actually there isn't a luxury — it's infrastructure for functioning.
+
+The real insight I keep coming back to: you don't need to read less. You need to delegate filtering. The information isn't the problem. The lack of structure around how it reaches you is the problem.
+
+Building this took time. It required being honest about what I actually needed to know versus what I was reading out of anxiety or habit. It required designing alert logic that didn't collapse under its own false-positive rate.
+
+But I haven't opened a news tab in six weeks, and I'm better informed than I was when I did it every morning.

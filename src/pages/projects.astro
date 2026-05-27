@@ -1,0 +1,82 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+
+interface Project {
+  title: string;
+  description: string;
+  link: string;
+  tech: string[];
+}
+
+const projects: Project[] = [
+  {
+    title: "HtmlViewer",
+    description: "A highly-aesthetic, responsive, and secure document hub built specifically to render HTML, structured Markdown, and interactive JSON dashboards.",
+    link: "https://github.com/mmaryam2020/HtmlViewer",
+    tech: ["Next.js 15", "TypeScript", "React", "Vercel Blob"],
+  },
+  {
+    title: "Nebby Navigator",
+    description: "Your Intergalactic Co-Pilot for Navigating Life. A gamified self-care and productivity companion designed to help you manage energy and tasks with a friendly, glowing space-blob.",
+    link: "https://github.com/mmaryam2020/Nebby",
+    tech: ["TypeScript", "React", "Gamification", "Productivity"],
+  },
+  {
+    title: "ActiveLife",
+    description: "A comprehensive personal training suite featuring a Strava Model Context Protocol (MCP) Server to bridge activity metrics with AI, and an interactive React dashboard for visualization.",
+    link: "https://github.com/mmaryam2020/ActiveLife-Workout-Analytics-Strava-MCP-Server",
+    tech: ["Python", "TypeScript", "React", "MCP", "Strava API"],
+  },
+  {
+    title: "Moka (nanoclaw)",
+    description: "A custom Claude-based personal AI assistant. Actively developed to function as a second brain and accountability partner who schedules reminders, remembers personal wins, and acts as a midnight architect.",
+    link: "https://github.com/mmaryam2020/nanoclaw",
+    tech: ["TypeScript", "Python", "Claude API", "AI Agent"],
+  },
+];
+---
+<Layout title="Projects | Agentic Building Diaries">
+  <Navbar />
+  <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-20">
+    <div class="mb-16">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-primary mb-4">
+        Things I've Built 🚀
+      </h1>
+      <p class="text-lg text-muted-foreground max-w-2xl">
+        A collection of tools, personal agents, and fun experiments I've cooked up to automate my life, track my fitness, and play with code.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {projects.map((project) => (
+        <div
+          class="bg-card border border-border/50 rounded-[24px] p-8 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-border hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)]"
+        >
+          <h3 class="text-xl font-bold tracking-tight text-primary mb-3">
+            {project.title}
+          </h3>
+          <p class="text-muted-foreground text-sm leading-relaxed mb-6">
+            {project.description}
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            {project.tech.map((t) => (
+              <span
+                class="text-xs text-muted-foreground px-2 py-1 bg-background rounded-md"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+          <a
+            href={project.link}
+            target="_blank"
+            class="text-sm font-medium text-accent hover:underline"
+          >
+            View Repository →
+          </a>
+        </div>
+      ))}
+    </div>
+  </main>
+</Layout>

@@ -1,0 +1,49 @@
+---
+title: "Why My AI Was Late This Morning"
+description: "On cold starts, flat files, and the surprisingly human problem of context."
+date: "2026-05-02"
+tags: ["ai", "agents", "architecture", "memory"]
+category: "🤖 Agentic Building Diaries"
+---
+
+This morning Moka was four minutes late.
+
+Four minutes is nothing. But when you've set up a system specifically to deliver a morning note at 7:00 AM, and it shows up at 7:04, you notice. I noticed. And because I built the system, I knew exactly what happened — which is its own kind of satisfying, even when it's mildly annoying.
+
+Here's what actually went wrong, and why it's a more interesting problem than it sounds.
+
+Moka runs on NanoClaw, a lightweight Claude-powered agent infrastructure I built as a personal project. One of the things it does every morning is send me a love letter. Not from a person — from the system itself. A note that reflects on my goals, my recent wins, things I've been thinking about. It sounds indulgent, and it is. It's also one of the most useful things I've built.
+
+### The Morning Routine & The Cold Start
+
+The letter is scheduled via a cron task. Every morning, NanoClaw wakes up, reads a set of files, constructs context, and generates the note.
+
+The key word there is "wakes up."
+
+Every session starts fresh. There is no persistent memory between calls. When the cron fires, the agent has no idea who I am, what I care about, what happened yesterday. It's a clean slate every single time.
+
+### Flat Files as Deterministic Memory
+
+So where does Moka's "memory" come from?
+
+Flat markdown files. There's a tasks.json, a wins.json, a folder of brain dumps, a folder of love-letter-rules I've written over time that describe what I want these notes to feel like. At the start of every scheduled task, the agent reads these files and reconstructs enough context to do its job.
+
+This works. It's reliable in a way that surprised me when I first built it — there's something almost elegant about deterministic file reads as a memory system. No embeddings, no retrieval weirdness, no probabilistic recall. The file says what it says.
+
+But here's the tradeoff: it's slow when the files get large.
+
+This morning, the brain-dump folder had accumulated about two weeks of entries. The agent tried to load more than it needed to, hit a processing delay, and the letter was late. Classic cold start problem. The agent couldn't reconstruct context fast enough because I hadn't been disciplined about pruning old entries.
+
+### The Tradeoffs: RAG vs. Determinism
+
+The alternative — vector databases, semantic search, retrieval-augmented generation — is faster at query time but lossy. You're not guaranteed to get back exactly what you stored. The embedding model decides what's "similar," which means sometimes the thing you needed most doesn't surface because it wasn't semantically close to the query. For a morning letter that's supposed to feel personal and grounded in what actually happened, "close enough" isn't good enough.
+
+So I'm living with flat files and the occasional four-minute delay.
+
+The deeper issue is context window limits. Not everything can be loaded every time. As Moka's memory grows, I have to make deliberate choices about what gets included in each scheduled run. Recent wins, yes. Older brain dumps, only if they're summarized. The love-letter-rules file stays small by design.
+
+### Memory as a First-Class Architecture Design Problem
+
+This is the thing nobody tells you when you start building persistent agent systems: memory architecture is a first-class design problem. It's not a detail you add later. The choices you make about how context is stored and retrieved determine whether your agent feels like it knows you or like it's meeting you for the first time every morning.
+
+Four minutes late. The letter was still good. But I pruned the brain-dump folder this afternoon.

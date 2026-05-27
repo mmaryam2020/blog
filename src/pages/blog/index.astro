@@ -1,0 +1,51 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getUnifiedPosts } from '../../lib/posts';
+
+const sortedPosts = await getUnifiedPosts();
+
+// Helper to calculate reading time
+const getReadingTime = (body: string) => {
+  const wordsPerMinute = 200;
+  const words = body.trim().split(/\s+/).length;
+  return Math.ceil(words / wordsPerMinute).toString();
+};
+---
+<Layout title="Blog | Agentic Building Diaries">
+  <Navbar />
+  <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-20">
+    <div class="mb-16">
+      <span class="px-3 py-1 text-xs font-bold tracking-wider uppercase bg-accent-background text-accent rounded-full mb-4 inline-block border border-accent/20">
+        Writing
+      </span>
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-primary mb-4">
+        The Blog
+      </h1>
+      <p class="text-lg text-muted-foreground max-w-2xl">
+        Long-form essays, deep dives, and structured thoughts on architecture, design systems, and engineering.
+      </p>
+    </div>
+
+    {sortedPosts.length === 0 ? (
+      <div class="text-center py-20 bg-card rounded-[24px] border border-border/50">
+        <p class="text-muted-foreground">No posts found yet. Check back soon!</p>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sortedPosts.map((post) => (
+          <ArticleCard
+            title={post.data.title}
+            description={post.data.description}
+            date={post.data.date}
+            readingTime={getReadingTime(post.body)}
+            tags={post.data.tags}
+            category={post.data.category}
+            href={`/blog/${post.slug}`}
+          />
+        ))}
+      </div>
+    )}
+  </main>
+</Layout>

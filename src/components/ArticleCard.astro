@@ -1,0 +1,59 @@
+---
+import { format } from 'date-fns';
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  readingTime: string;
+  tags: string[];
+  category?: string;
+  href: string;
+  class?: string;
+}
+
+const { title, description, date, readingTime, tags, category, href, class: className } = Astro.props;
+---
+<a
+  href={href}
+  class={`group block bg-card rounded-[24px] p-8 border border-border/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] focus:outline-none focus:border-accent ${className || ""}`}
+>
+  <div class="flex flex-col h-full">
+    <div class="flex items-center gap-3 mb-4 flex-wrap">
+      {category && (
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-accent-background text-accent text-xs font-bold tracking-wider uppercase rounded-full border border-accent/10">
+          {category}
+        </span>
+      )}
+      <span class="inline-block px-3 py-1 bg-background text-muted-foreground text-xs font-medium rounded-full border border-border/50 group-hover:border-border transition-colors">
+        {format(date, "MMMM d, yyyy")}
+      </span>
+    </div>
+    
+    <h3 class="text-xl font-bold tracking-tight text-foreground mb-3 group-hover:text-accent transition-colors line-clamp-2">
+      {title}
+    </h3>
+    
+    <p class="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-3 flex-grow">
+      {description}
+    </p>
+    
+    <div class="flex items-center justify-between pt-4 border-t border-border/40 mt-auto">
+      <div class="flex items-center gap-2">
+        {tags.slice(0, 2).map((tag) => (
+          <span class="text-xs text-muted-foreground px-2 py-1 bg-background rounded-md">
+            #{tag}
+          </span>
+        ))}
+        {tags.length > 2 && (
+          <span class="text-xs text-muted-foreground px-2 py-1 bg-background rounded-md">
+            +{tags.length - 2}
+          </span>
+        )}
+      </div>
+      <span class="text-xs font-medium text-muted-foreground">
+        {readingTime} min read
+      </span>
+    </div>
+  </div>
+</a>

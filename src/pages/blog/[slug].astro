@@ -1,0 +1,113 @@
+---
+import { getUnifiedPosts } from '../../lib/posts';
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import { format } from 'date-fns';
+
+export async function getStaticPaths() {
+  const posts = await getUnifiedPosts();
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+
+let Content = null;
+if (!post.isHtml && post._originalEntry) {
+  const rendered = await post._originalEntry.render();
+  Content = rendered.Content;
+}
+
+const getReadingTime = (body: string) => {
+  const wordsPerMinute = 200;
+  const words = body.trim().split(/\s+/).length;
+  return Math.ceil(words / wordsPerMinute).toString();
+};
+const isFullHtml = post.isHtml && (post.body.includes('<h1') || post.body.includes('<H1'));
+
+
+---
+<Layout title={`${post.data.title} | Agentic Building Diaries`} description={post.data.description}>
+  <Navbar />
+  <main class="flex-1 w-full max-w-4xl mx-auto px-6 py-20">
+    <a href="/blog" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors font-medium">
+      &larr; Back to blog
+    </a>
+    
+    {isFullHtml ? (
+      <iframe
+        srcdoc={post.body}
+        class="w-full border-none overflow-hidden"
+        style="min-height: 800px; transition: height 0.25s ease;"
+        onload="
+          const iframe = this;
+          const resize = () => {
+            if (iframe.contentWindow?.document?.documentElement) {
+              // Ensure height fits content perfectly
+              iframe.style.height = iframe.contentWindow.document.documentElement.scrollHeight + 'px';
+            }
+          };
+          resize();
+          // Resize on full load
+          iframe.contentWindow.addEventListener('load', resize);
+          // Resize on window resize
+          window.addEventListener('resize', resize);
+          // Observe DOM mutations to auto-adjust height when content/themes change dynamically
+          if (iframe.contentWindow.MutationObserver) {
+            new iframe.contentWindow.MutationObserver(resize).observe(
+              iframe.contentWindow.document.documentElement,
+              { subtree: true, childList: true, attributes: true }
+            );
+          }
+        "
+      />
+    ) : (
+      <div class="bg-card border border-border/80 rounded-[24px] p-8 md:p-12 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+        <article class="prose max-w-none">
+          <div class="mb-8 pb-6 border-b border-border/60">
+            <div class="flex items-center gap-3 mb-4 flex-wrap">
+              {post.data.category && (
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-accent-background text-accent text-xs font-bold tracking-wider uppercase rounded-full border border-accent/10">
+                  {post.data.category}
+                </span>
+              )}
+              <span class="text-sm text-muted-foreground">
+                {format(post.data.date, "MMMM d, yyyy")}
+              </span>
+              <span class="text-muted-foreground text-xs">•</span>
+              <span class="text-sm text-muted-foreground">
+                {getReadingTime(post.body)} min read
+              </span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-primary mb-4 leading-tight">
+              {post.data.title}
+            </h1>
+            <p class="text-lg text-muted-foreground leading-relaxed italic">
+              {post.data.description}
+            </p>
+            <div class="flex flex-wrap gap-2 mt-6">
+              {post.data.tags?.map((tag: string) => (
+                <span
+                  key={tag}
+                  class="text-xs text-muted-foreground px-2.5 py-1 bg-background border border-border rounded-md"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </div>
+          
+          {post.isHtml ? (
+            <Fragment set:html={post.body} />
+          ) : (
+            Content && <Content />
+          )}
+        </article>
+      </div>
+    )}
+
+  </main>
+</Layout>
+
