@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Secret to a Great Personal AI Bot</title>
+    <!-- Modern high-end typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Premium warm off-white canvas color palette */
+            --bg-canvas: #F8F8F6;
+            --bg-card: #ffffff;
+            --border: rgba(0, 0, 0, 0.06);
+            --border-active: #1a1a1a;
+            --foreground: #1a1a1a;
+            --muted: #737373;
+            --primary: #000000;
+            --accent: #d97706; /* Warm amber gold */
+            --success: #16a34a;
+            --danger: #dc2626;
+            
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            --font-heading: 'Outfit', sans-serif;
+            --font-mono: 'Plus Jakarta Sans', ui-monospace, SFMono-Regular, SF Mono, Menlo, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--foreground);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            padding: 3rem 1.5rem 2rem 1.5rem;
+            text-align: center;
+            background: transparent;
+        }
+
+        header h1 {
+            margin: 0 auto;
+            max-width: 850px;
+            font-family: var(--font-heading);
+            font-size: 3.2rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--foreground);
+            line-height: 1.15;
+        }
+
+        header p {
+            color: var(--muted);
+            margin: 0.5rem 0 0 0;
+            font-size: 1.1rem;
+            font-weight: 450;
+        }
+
+        .summary-box {
+            max-width: 800px;
+            margin: 2.5rem auto 0 auto;
+            text-align: left;
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+        .summary-box p {
+            color: #525252;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+        .summary-box p:last-child {
+            margin-bottom: 0;
+        }
+        .summary-box ul {
+            margin: 2rem 0;
+            padding: 1.75rem 2.5rem;
+            list-style: none;
+            background: #fafaf9;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+        .summary-box li {
+            margin-bottom: 1.25rem;
+            color: #404040;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            padding-left: 2.2rem;
+            text-indent: -2.2rem;
+        }
+        .summary-box li:last-child {
+            margin-bottom: 0;
+        }
+        .summary-box li::before {
+            display: none;
+        }
+        .summary-box li strong {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Premium search/filename input box component */
+        .search-container {
+            margin: 1.5rem 0 3rem 0;
+            width: 90%;
+            max-width: 420px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .filename-input {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 0.65rem 1rem;
+            border-radius: 12px;
+            color: var(--muted);
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01), 0 1px 2px rgba(0, 0, 0, 0.01);
+        }
+
+        .filename-input:focus-within {
+            border-color: var(--border-active); /* Deep off-black border color */
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.04); /* Soft gray outer glow */
+            background: #ffffff;
+        }
+
+        .filename-input svg {
+            width: 1.1rem;
+            height: 1.1rem;
+            stroke: var(--muted);
+            fill: none;
+            stroke-width: 2.5;
+        }
+
+        .filename-input:focus-within svg {
+            stroke: var(--border-active);
+        }
+
+        .filename-input input {
+            background: transparent;
+            border: none;
+            color: var(--foreground);
+            font-weight: 600;
+            outline: none;
+            font-size: 0.9rem;
+            font-family: var(--font-main);
+            width: 100%;
+        }
+
+        .filename-input input::placeholder {
+            color: #a3a3a3;
+            font-weight: 500;
+        }
+
+        main {
+            max-width: 1200px;
+            width: 90%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            padding-bottom: 5rem;
+        }
+
+        section {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px; /* Floating floating card corners */
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.015), 0 1px 3px rgba(0, 0, 0, 0.01);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        section:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-active);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.03), 0 1px 4px rgba(0, 0, 0, 0.01);
+        }
+
+        .section-header {
+            margin-bottom: 1.25rem;
+        }
+
+        h2 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            color: var(--foreground);
+        }
+
+        h3 {
+            font-size: 1.05rem;
+            font-family: var(--font-heading);
+            font-weight: 650;
+            color: var(--accent);
+            margin: 1.25rem 0 0.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        p {
+            margin: 0.5rem 0 1.25rem 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        strong {
+            color: var(--foreground);
+            font-weight: 600;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem 0;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            padding-left: 1.35rem;
+            position: relative;
+            font-size: 0.92rem;
+            color: var(--muted);
+        }
+
+        li::before {
+            content: "•";
+            position: absolute;
+            left: 0.2rem;
+            color: var(--accent);
+            font-size: 1.2rem;
+            line-height: 1;
+            top: -0.1rem;
+        }
+
+        ol {
+            padding-left: 1.25rem;
+            margin: 0 0 1.5rem 0;
+        }
+
+        ol li {
+            padding-left: 0.25rem;
+            margin-bottom: 0.6rem;
+        }
+
+        ol li::before {
+            display: none;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            background-color: #f3f3f2;
+            padding: 0.2rem 0.45rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            color: var(--foreground);
+            font-weight: 500;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        pre {
+            background-color: #fcfcfc;
+            padding: 1.15rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            margin: 1rem 0;
+        }
+
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            border: none;
+            font-size: 0.8rem;
+            color: #404040;
+            line-height: 1.5;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-left: 0.35rem;
+        }
+
+        .badge-core { background-color: #eff6ff; color: #2563eb; }
+        .badge-data { background-color: #fef3c7; color: #d97706; }
+        .badge-ipc { background-color: #fef2f2; color: #dc2626; }
+        .badge-agent { background-color: #f0fdf4; color: #16a34a; }
+
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            margin: 1rem 0 1.5rem 0;
+        }
+
+        .flow-step {
+            padding: 0.75rem;
+            background-color: #fafaf9;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--foreground);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.01);
+        }
+
+        .flow-arrow {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--muted);
+            line-height: 1;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .tag {
+            background-color: #f4f4f5;
+            color: #71717a;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 3rem 1.5rem;
+            width: 100%;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            header h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>The secret to a great personal AI bot? Simple architecture. 🛠️🤖</h1>
+    <div class="summary-box">
+        <p>When I set out to build my ultimate personal AI assistant, I evaluated several complex frameworks. I ultimately built upon the NanoClaw v1 orchestrator because of its brilliant architectural simplicity:</p>
+        <ul>
+            <li><strong>📦 Docker Isolation:</strong> The Claude SDK runs in a sandboxed container.</li>
+            <li><strong>📂 File-Based IPC:</strong> Host and container communicate simply by dropping JSON files into a shared folder. No complex WebSockets.</li>
+            <li><strong>🗄️ SQLite:</strong> Single-file persistence.</li>
+        </ul>
+        <p>Because it’s so beautifully simple, I’ve been able to easily fork it and bolt on custom features like Strava MCP integration, Vercel web-publishing, and reliability guards for cron tasks.</p>
+        <p>I realized this architecture is perfect for anyone wanting to build their own personal bot, so I put together this interactive Wiki to break down exactly how it works under the hood.</p>
+    </div>
+</header>
+
+<div class="search-container">
+    <div class="filename-input">
+        <svg viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search concepts, files, or parameters..." onkeyup="filterWiki()">
+    </div>
+</div>
+
+<main id="wikiContent">
+    <!-- Architecture Section -->
+    <section data-tags="architecture philosophy high-level core scale">
+        <div>
+            <div class="section-header">
+                <h2>🏗️ Core Architecture</h2>
+            </div>
+            <p>NanoClaw operates as a <strong>single-process Node.js orchestrator</strong> designed to handle fully isolated agent runs inside containers.</p>
+            <div class="flow-diagram">
+                <div class="flow-step">Adapter Input (WhatsApp / Telegram)</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-step">Host Orchestrator Process (src/index.ts)</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-step">SQLite Persistence Engine (src/db.ts)</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-step">Docker Agent Container (Claude SDK)</div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-step">IPC File System Bridge (src/ipc.ts)</div>
+            </div>
+        </div>
+        <div class="tag-list">
+            <span class="tag">Orchestration</span>
+            <span class="tag">Isolation</span>
+            <span class="tag">SQLite</span>
+            <span class="tag">Claude SDK</span>
+        </div>
+    </section>
+
+    <!-- Key Files Section -->
+    <section data-tags="files folders entry-points core-files structure">
+        <div>
+            <div class="section-header">
+                <h2>📂 Key Files & Directories</h2>
+            </div>
+            <p>High-level map of the codebase repository structure:</p>
+            <ul>
+                <li><code>src/index.ts</code> <span class="badge badge-core">Core</span> App start, messaging loop, and main loops.</li>
+                <li><code>src/db.ts</code> <span class="badge badge-data">Data</span> SQLite database schema & migrations.</li>
+                <li><code>src/container-runner.ts</code> <span class="badge badge-ipc">IPC</span> Manages Docker lifecycles and mounts.</li>
+                <li><code>src/group-queue.ts</code> <span class="badge badge-core">Core</span> Serializes container runs per user group.</li>
+                <li><code>container/agent-runner/</code> <span class="badge badge-agent">Agent</span> Runtime agent executor inside the container.</li>
+            </ul>
+        </div>
+        <div class="tag-list">
+            <span class="tag">src/</span>
+            <span class="tag">container/</span>
+            <span class="tag">groups/</span>
+        </div>
+    </section>
+
+    <!-- Execution Flows Section -->
+    <section data-tags="flow execution lifecycle message task trigger events">
+        <div>
+            <div class="section-header">
+                <h2>⚡ Execution Lifecycle</h2>
+            </div>
+            <h3>Message Inbound Flow</h3>
+            <ol>
+                <li>Inbound Adapter captures message events.</li>
+                <li><code>onMessage()</code> inserts message into local database.</li>
+                <li><code>src/index.ts</code> loop detects unread database entries.</li>
+                <li>Active triggers process gating rules.</li>
+                <li><code>GroupQueue</code> fires up or routes to an active container.</li>
+            </ol>
+            <h3>Scheduled Task Flow</h3>
+            <ol>
+                <li><code>src/task-scheduler.ts</code> scans the <code>scheduled_tasks</code> list.</li>
+                <li>The target task is queued in the group's container queue.</li>
+                <li>The container runs in specialized <code>context_mode</code>.</li>
+            </ol>
+        </div>
+        <div class="tag-list">
+            <span class="tag">Async Loop</span>
+            <span class="tag">Queuing</span>
+            <span class="tag">Cron Jobs</span>
+        </div>
+    </section>
+
+    <!-- IPC and Containers Section -->
+    <section data-tags="ipc containers isolation docker security mounts">
+        <div>
+            <div class="section-header">
+                <h2>🔒 Isolation & IPC</h2>
+            </div>
+            <p>Complete host-to-agent safety is established using isolated <strong>Docker sandboxes</strong>, coordinating using file-based IPC.</p>
+            <ul>
+                <li><strong>Safe Mounts:</strong> Maps <code>groups/{name}</code> straight into <code>/workspace/group</code>.</li>
+                <li><strong>IPC Path:</strong> Orchestrated via <code>data/ipc/{group}/</code>:
+                    <ul>
+                        <li><code>messages/</code>: Pending agent requests.</li>
+                        <li><code>tasks/</code>: Schema and task changes.</li>
+                        <li><code>input/</code>: Direct console piping.</li>
+                    </ul>
+                </li>
+                <li><strong>Mount Gating:</strong> <code>src/mount-security.ts</code> validates all directory inclusions.</li>
+            </ul>
+        </div>
+        <div class="tag-list">
+            <span class="tag">Docker</span>
+            <span class="tag">Sandboxing</span>
+            <span class="tag">IPC</span>
+            <span class="tag">Security</span>
+        </div>
+    </section>
+
+    <!-- Data Model Section -->
+    <section data-tags="database sqlite schema tables persistence storage chats">
+        <div>
+            <div class="section-header">
+                <h2>💾 Data Model (SQLite)</h2>
+            </div>
+            <p>Crucial persistent schema tables defined under <code>src/db.ts</code>:</p>
+            <ul>
+                <li><code>chats</code>: Tracks communication channels and groups.</li>
+                <li><code>messages</code>: Retains long-term dialogue exchange logs.</li>
+                <li><code>scheduled_tasks</code>: The persistent source of truth for scheduled cron runs.</li>
+                <li><code>sessions</code>: Tracks active LLM conversations.</li>
+                <li><code>router_state</code>: Keeps tabs on channel event cursors.</li>
+            </ul>
+        </div>
+        <div class="tag-list">
+            <span class="tag">SQLite</span>
+            <span class="tag">Database</span>
+            <span class="tag">Migrations</span>
+        </div>
+    </section>
+
+    <!-- Developer Tasks Section -->
+    <section data-tags="dev tasks commands how-to npm build debug scripts">
+        <div>
+            <div class="section-header">
+                <h2>🛠️ Common Developer Tasks</h2>
+            </div>
+            <pre><code># Run application with active hot reload
+npm run dev
+
+# Bundle TypeScript codebase
+npm run build
+
+# Rebuild isolated agent runner sandbox
+./container/build.sh
+
+# Run comprehensive test suite
+npm test
+
+# Check local runtime systemd service status
+systemctl --user status nanoclaw</code></pre>
+        </div>
+        <div class="tag-list">
+            <span class="tag">Commands</span>
+            <span class="tag">Scripts</span>
+            <span class="tag">CLI</span>
+        </div>
+    </section>
+
+    <!-- Critical Rules Section -->
+    <section data-tags="rules constraints mandatory security guidelines parameters memory">
+        <div>
+            <div class="section-header">
+                <h2>⚠️ Critical Architecture Rules</h2>
+            </div>
+            <ul>
+                <li><strong>Asynchronous Polling:</strong> The orchestrator uses recursive <code>setTimeout</code> loops (rather than blocking or fixed intervals) for IPC and database synchronization to ensure the event loop remains clear.</li>
+                <li><strong>1GB Hard Limits:</strong> Ensure at least 1GB memory allocation per container to avoid OOM crash code 137.</li>
+                <li><strong>Concurrency Control:</strong> <code>GroupQueue</code> serializes commands to guard the single-container invariant.</li>
+                <li><strong>Privilege Escapes:</strong> Main group instances are granted global directory write privileges and full folder inclusions.</li>
+            </ul>
+        </div>
+        <div class="tag-list">
+            <span class="tag">Constraints</span>
+            <span class="tag">Guidelines</span>
+            <span class="tag">Memory</span>
+        </div>
+    </section>
+</main>
+
+<footer>
+    NanoClaw LLM Wiki | Built Premium Light Theme | "Intelligence through structure."
+</footer>
+
+<script>
+    function filterWiki() {
+        let input = document.getElementById('searchInput');
+        let filter = input.value.toLowerCase();
+        let sections = document.querySelectorAll('section');
+
+        sections.forEach(section => {
+            let tags = section.getAttribute('data-tags');
+            let content = section.innerText.toLowerCase();
+            if (tags.includes(filter) || content.includes(filter)) {
+                section.style.display = "flex";
+            } else {
+                section.style.display = "none";
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
