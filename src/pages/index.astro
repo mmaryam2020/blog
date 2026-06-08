@@ -14,7 +14,10 @@ const getReadingTime = (body: string) => {
   return Math.ceil(words / wordsPerMinute).toString();
 };
 ---
-<Layout title="Agentic Diaries">
+<Layout
+  title="Agentic Diaries"
+  description="Notes from building AI systems, thinking through messy ideas, and figuring things out in public."
+>
   <Navbar />
   <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-20 md:py-32">
     <section class="flex flex-col items-center text-center mb-24 md:mb-28">
