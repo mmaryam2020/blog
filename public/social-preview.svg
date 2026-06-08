@@ -1,0 +1,23 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F8F8F6"/>
+  <rect x="42" y="42" width="1116" height="546" rx="32" fill="#FFFFFF" stroke="#E6E6E3" stroke-width="2"/>
+  <rect x="88" y="92" width="248" height="40" rx="20" fill="#DBEAFE"/>
+  <text x="212" y="118" text-anchor="middle" fill="#2563EB" font-family="Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="3">
+    AGENTIC DIARIES
+  </text>
+  <text x="88" y="220" fill="#111111" font-family="Arial, sans-serif" font-size="68" font-weight="800">
+    Essays on AI, memory,
+  </text>
+  <text x="88" y="300" fill="#111111" font-family="Arial, sans-serif" font-size="68" font-weight="800">
+    attention, and identity.
+  </text>
+  <text x="88" y="390" fill="#5B6472" font-family="Arial, sans-serif" font-size="30" font-weight="500">
+    Building systems that read the news, remember progress,
+  </text>
+  <text x="88" y="432" fill="#5B6472" font-family="Arial, sans-serif" font-size="30" font-weight="500">
+    and occasionally know their builders too well.
+  </text>
+  <rect x="88" y="492" width="252" height="22" rx="11" fill="#EEF2FF"/>
+  <rect x="352" y="492" width="196" height="22" rx="11" fill="#F3F4F6"/>
+  <rect x="560" y="492" width="176" height="22" rx="11" fill="#EEF2FF"/>
+</svg>

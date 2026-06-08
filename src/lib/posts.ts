@@ -12,6 +12,7 @@ export interface UnifiedPost {
     date: Date;
     tags: string[];
     category?: string;
+    featured?: boolean;
   };
   _originalEntry?: any;
 }
@@ -29,6 +30,7 @@ export async function getUnifiedPosts(): Promise<UnifiedPost[]> {
       date: post.data.date,
       tags: post.data.tags || [],
       category: post.data.category,
+      featured: post.data.featured,
     },
     _originalEntry: post,
   }));
@@ -52,6 +54,7 @@ export async function getUnifiedPosts(): Promise<UnifiedPost[]> {
         let date = stat.mtime; // default to file modification date
         let tags: string[] = [];
         let category: string | undefined = undefined;
+        let featured = false;
         let htmlToParse = fileContent;
         
         const frontmatterMatch = fileContent.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
@@ -81,6 +84,7 @@ export async function getUnifiedPosts(): Promise<UnifiedPost[]> {
                 else if (key === 'description') description = val;
                 else if (key === 'date') date = new Date(val);
                 else if (key === 'category') category = val;
+                else if (key === 'featured') featured = val.toLowerCase() === 'true';
                 else if (key === 'tags') {
                   if (val.startsWith('[') && val.endsWith(']')) {
                     tags = val.slice(1, -1).split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
@@ -133,6 +137,7 @@ export async function getUnifiedPosts(): Promise<UnifiedPost[]> {
             date,
             tags,
             category,
+            featured,
           },
         });
       }
