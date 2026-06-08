@@ -18,19 +18,23 @@ const { Content } = await aboutEntry.render();
     <div class="bg-card border border-border/80 rounded-[24px] p-8 md:p-12 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
       <article class="prose max-w-none">
         <div class="mb-8 pb-6 border-b border-border/60">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-accent-background text-accent text-xs font-bold tracking-wider uppercase rounded-full border border-accent/10 mb-4">
-            ⚙️ BIOGRAPHY
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-card text-accent text-xs font-bold tracking-wider uppercase rounded-full border border-border mb-4">
+            About the Builder
           </span>
-          <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-primary mb-4 leading-tight">
-            {title}
-          </h1>
-          <div class="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
-            <span>By a Data Person</span>
-            <span class="text-xs">•</span>
-            <span>May 26, 2026</span>
-            <span class="text-xs">•</span>
-            <span>6 min read</span>
+          <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-primary mb-3 leading-tight">
+                {name}
+              </h1>
+              <p class="text-base md:text-lg text-muted-foreground m-0">{role}</p>
+            </div>
+            <div class="not-prose flex h-18 w-18 items-center justify-center rounded-full border border-border bg-background text-2xl font-bold text-primary shadow-sm">
+              {avatarText}
+            </div>
           </div>
+          <p class="mt-6 mb-0 text-lg md:text-xl leading-relaxed text-primary font-medium max-w-2xl">
+            Building thoughtful AI systems, writing honest field notes, and treating ambition like an endurance sport.
+          </p>
         </div>
         
         <Content />
@@ -40,7 +44,7 @@ const { Content } = await aboutEntry.render();
             <h3 class="text-xl font-bold text-primary mb-4">Core Interests</h3>
             <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 list-none p-0">
               {interests.map((interest: string) => (
-                <li class="relative pl-6 mb-2">
+                <li class="relative pl-6 mb-2 before:content-['→'] before:absolute before:left-0 before:text-accent">
                   {interest}
                 </li>
               ))}
