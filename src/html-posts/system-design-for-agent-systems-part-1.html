@@ -1,0 +1,1020 @@
+---
+title: "System Design for Agent Systems (Part 1)"
+description: "A battle-tested mental model for the scaffolding outside the LLM: why agent workloads break web assumptions, state management, and the evaluation pyramid."
+date: "2026-09-09"
+tags: ["x-digest","twitter-digest","agent-systems","system-design","architecture","ai-engineering"]
+category: "⚡ X-Digest"
+featured: true
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Design for Agent Systems (Part 1)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: transparent;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --card-border-subtle: #f1f5f9;
+      --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 6px 16px rgba(0, 0, 0, 0.03);
+      --card-shadow-hover: 0 10px 24px rgba(0, 0, 0, 0.07);
+
+      --text-main: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+
+      /* Visual Accents */
+      --c-blue: #2563eb;
+      --c-blue-bg: #eff6ff;
+      --c-purple: #7c3aed;
+      --c-purple-bg: #f5f3ff;
+      --c-amber: #d97706;
+      --c-amber-bg: #fffbeb;
+      --c-emerald: #059669;
+      --c-emerald-bg: #ecfdf5;
+      --c-rose: #e11d48;
+      --c-rose-bg: #fff1f2;
+
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", SFMono-Regular, Consolas, monospace;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+    }
+
+    html, body {
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    html::-webkit-scrollbar, body::-webkit-scrollbar {
+      display: none;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text-body);
+      font-family: var(--font-sans);
+      font-size: 16.5px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      padding: 6px 2px 60px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    /* Top Sticky Navigation */
+    .top-nav {
+      position: sticky;
+      top: 10px;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 999px;
+      padding: 10px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+    .nav-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .dino-nav-avatar {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(16, 185, 129, 0.2));
+      animation: dino-nav-bob 3s infinite ease-in-out;
+    }
+    @keyframes dino-nav-bob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-2px) rotate(4deg); }
+    }
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 5px 12px;
+      border-radius: 999px;
+      transition: all 0.2s ease;
+    }
+    .nav-links a:hover {
+      color: var(--c-blue);
+      background: var(--c-blue-bg);
+    }
+    .nav-links a.active {
+      color: #15803d;
+      background: #dcfce7;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(34, 197, 94, 0.15);
+    }
+
+    /* Dino Interactive Companion Card */
+    .dino-companion-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+      border: 1.5px solid #bbf7d0;
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.08);
+      position: relative;
+    }
+    .dino-mascot-box {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .dino-mascot-img {
+      width: 78px;
+      height: 82px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(16, 185, 129, 0.18));
+      animation: dino-float 2.8s infinite ease-in-out;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .dino-mascot-img:hover {
+      transform: scale(1.08) rotate(-4deg);
+    }
+    .dino-mascot-img.hop {
+      animation: dino-hop 0.45s ease;
+    }
+    @keyframes dino-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    @keyframes dino-hop {
+      0% { transform: translateY(0) scale(1); }
+      40% { transform: translateY(-14px) scale(1.1) rotate(5deg); }
+      70% { transform: translateY(-3px) scale(0.98); }
+      100% { transform: translateY(0) scale(1); }
+    }
+    .dino-status-pill {
+      font-size: 11px;
+      font-weight: 700;
+      color: #15803d;
+      background: #dcfce7;
+      padding: 2px 9px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .dino-status-dot {
+      width: 6px;
+      height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #22c55e;
+    }
+    .dino-speech-wrap {
+      flex: 1;
+      background: #ffffff;
+      border: 1px solid #dcfce7;
+      border-radius: var(--radius-md);
+      padding: 13px 17px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+    .dino-speech-wrap::before {
+      content: "";
+      position: absolute;
+      left: -8px;
+      top: 24px;
+      border-width: 6px 8px 6px 0;
+      border-style: solid;
+      border-color: transparent #ffffff transparent transparent;
+    }
+    .dino-speech-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .dino-speaker-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dino-tab-badge {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+      transition: all 0.2s ease;
+    }
+    .dino-speech-bubble-text {
+      font-size: 14px;
+      color: #334155;
+      line-height: 1.55;
+      margin: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    /* Mini Dino Tip Box inside Cards */
+    .dino-card-tip {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13.5px;
+      color: #166534;
+      line-height: 1.5;
+    }
+    .dino-card-tip img {
+      width: 28px;
+      height: 30px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    /* Header */
+    .header {
+      margin-bottom: 24px;
+    }
+    .header-meta {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-blue { background: var(--c-blue-bg); color: var(--c-blue); border: 1px solid #bfdbfe; }
+    .badge-purple { background: var(--c-purple-bg); color: var(--c-purple); border: 1px solid #ddd6fe; }
+    .badge-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+
+    /* Stream Identifier Banner */
+    .stream-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      padding: 5px 14px 5px 6px;
+      margin-bottom: 16px;
+    }
+    .stream-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .stream-caption {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #1e40af;
+    }
+
+    h1.title {
+      font-size: clamp(32px, 3.8vw, 42px);
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--text-main);
+      letter-spacing: -0.025em;
+      margin-bottom: 12px;
+    }
+    .subtitle {
+      font-size: 17.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 26px 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--card-shadow);
+      transition: box-shadow 0.2s;
+      scroll-margin-top: 24px;
+    }
+    .card:hover {
+      box-shadow: var(--card-shadow-hover);
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Core Thesis Hero Card */
+    .thesis-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+      border: 1.5px solid #bfdbfe;
+      position: relative;
+    }
+    .thesis-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: var(--c-blue);
+    }
+    .thesis-quote {
+      font-size: 19px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    /* Teaching Point Block */
+    .point-block {
+      margin-bottom: 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--card-border-subtle);
+    }
+    .point-block:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .point-heading {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .point-desc {
+      font-size: 15px;
+      color: var(--text-body);
+      line-height: 1.6;
+    }
+
+    /* Contrast Table */
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 14.5px;
+    }
+    .comp-table th, .comp-table td {
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .comp-table th {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--text-main);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    /* Callout Note */
+    .callout-amber {
+      background: #fffbeb;
+      border-left: 4px solid var(--c-amber);
+      padding: 14px 18px;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      font-size: 14.5px;
+      color: #92400e;
+      margin-top: 14px;
+    }
+    .callout-blue {
+      background: #eff6ff;
+      border-left: 4px solid var(--c-blue);
+      padding: 14px 18px;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      font-size: 14.5px;
+      color: #1e40af;
+      margin-top: 14px;
+    }
+
+    /* Source Attribution Card */
+    .source-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      margin-top: 36px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+    .source-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .source-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #0f172a;
+    }
+    .source-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #0f172a;
+      color: #ffffff !important;
+      text-decoration: none !important;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+    .source-link-btn:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+    .source-card-body {
+      font-size: 14.5px;
+      color: var(--text-body);
+      line-height: 1.6;
+    }
+    .source-card-body strong {
+      color: var(--text-main);
+    }
+    .source-card-meta {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- Top Sticky Navigation -->
+    <nav class="top-nav">
+      <div class="nav-title">
+        <img src="/dino-companion.png" alt="Dino Companion" class="dino-nav-avatar" />
+        <span>System Design for Agent Systems</span>
+      </div>
+      <div class="nav-links">
+        <a href="#idea-1" class="active">1. Workloads</a>
+        <a href="#idea-2">2. Tools</a>
+        <a href="#idea-3">3. Prompts & Memory</a>
+        <a href="#idea-4">4. Control</a>
+        <a href="#idea-5">5. Gates & Evals</a>
+      </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="stream-banner">
+        <div class="stream-pill">
+          <span>⚡ X-Digest</span>
+        </div>
+        <span class="stream-caption">Curated technical synthesis from high-signal engineering discussions on X</span>
+      </div>
+
+      <div class="header-meta">
+        <span class="badge badge-purple">System Architecture</span>
+        <span class="badge badge-blue">Visual Digest</span>
+        <span class="badge badge-green">Part 1</span>
+        <span>•</span>
+        <span>Aug 20, 2026</span>
+        <span>•</span>
+        <span>7 min read</span>
+      </div>
+      <h1 class="title">System Design for Agent Systems (Part 1)</h1>
+      <p class="subtitle">A conceptual mental model for the engineering outside the LLM: why agent workloads break web service assumptions, how to structure state, and how to evaluate non-deterministic systems.</p>
+    </header>
+
+    <!-- Central Thesis / Level 1 Hero -->
+    <section class="card thesis-card">
+      <div class="card-title" style="color: var(--c-blue);">
+        <span>💡</span> The Central Thesis
+      </div>
+      <div class="thesis-quote">
+        “Put a frontier model into a badly designed agent system and you get a more articulate failure. Nearly all of the engineering sits outside the model, in the scaffolding called the agent harness.”
+      </div>
+      <p style="font-size: 15px; color: var(--text-body);">
+        Swapping the model does not fix architectural bugs. The scaffolding—tool contracts, prompt cache ordering, memory boundaries, unidirectional orchestration, and evaluation gates—remains 100% unchanged regardless of which frontier model you use.
+      </p>
+    </section>
+
+    <!-- Monster Companion Guide Banner -->
+    <div class="dino-companion-card" id="dino-companion-card">
+      <div class="dino-mascot-box">
+        <div class="dino-mascot-img" id="dino-mascot-img" title="Click me to wave!" style="width: 78px; height: 84px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+          <!-- Monster SVG will be inserted here dynamically -->
+        </div>
+        <div class="dino-status-pill">
+          <span class="dino-status-dot"></span>
+          <span id="dino-status-text">Ollie is guiding Idea 1</span>
+        </div>
+      </div>
+      <div class="dino-speech-wrap">
+        <div class="dino-speech-header">
+          <div class="dino-speaker-title">
+            <span id="dino-speaker-name">🐙 Ollie Companion</span>
+          </div>
+          <span class="dino-tab-badge" id="dino-tab-badge">Workloads</span>
+        </div>
+        <p class="dino-speech-bubble-text" id="dino-speech-text">
+          &ldquo;Whoa there! Agent jobs take minutes, not milliseconds. Do not hold open synchronous HTTP connections or you will time out! Always size workers for async I/O wait, not CPU cores.&rdquo;
+        </p>
+      </div>
+    </div>
+
+    <!-- Idea 1: Mental Model Shift -->
+    <section class="card" id="idea-1">
+      <div class="card-title">
+        <span class="badge badge-blue">Idea 1</span> The Mental Model Shift: Agent Jobs ≠ Web Requests
+      </div>
+      <p style="font-size: 15.5px; margin-bottom: 12px;">
+        Most failures in agent systems occur because engineers apply standard web service design patterns to agent runtimes. Their resource profiles are polar opposites:
+      </p>
+
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>Traditional Web Workload</th>
+            <th>Agent Workload</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Latency</strong></td>
+            <td>50–200ms synchronous bursts</td>
+            <td><strong>Minutes per job</strong> (must be asynchronous)</td>
+          </tr>
+          <tr>
+            <td><strong>Bottleneck</strong></td>
+            <td>CPU & memory bound</td>
+            <td><strong>70–80% I/O wait</strong> on LLM provider APIs</td>
+          </tr>
+          <tr>
+            <td><strong>Determinism</strong></td>
+            <td>Deterministic (assert in CI)</td>
+            <td><strong>Non-deterministic</strong> (retries are not free)</td>
+          </tr>
+          <tr>
+            <td><strong>Marginal Cost</strong></td>
+            <td>Near zero ($0.00001 / request)</td>
+            <td><strong>A bug is a bill</strong> (~$1/min in a silent infinite loop)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout-amber">
+        <strong>The Key Takeaway:</strong> Never hold synchronous HTTP connections open. Design for asynchronous I/O and enforce external spend budgets because runaway loops do not crash—they silently burn dollars.
+      </div>
+    </section>
+
+    <!-- Idea 2: Tool Contracts -->
+    <section class="card" id="idea-2">
+      <div class="card-title">
+        <span class="badge badge-purple">Idea 2</span> Tool Design as a Contract
+      </div>
+
+      <div class="point-block">
+        <div class="point-heading">1. Small Surface Area & Strict Typing</div>
+        <p class="point-desc">
+          Expose small, single-action tools with rigid schemas rather than kitchen-sink functions. Ambiguous parameters confuse the model and waste context tokens on erroneous tool calls.
+        </p>
+      </div>
+
+      <div class="point-block">
+        <div class="point-heading">2. Timeouts & Centralized Logging</div>
+        <p class="point-desc">
+          Register tools centrally and assign every tool a mandatory execution timeout. Log all inputs, outputs, and latencies to prevent hung processes and simplify debugging.
+        </p>
+      </div>
+    </section>
+
+    <!-- Idea 3: State & Prompt Caching Rules -->
+    <section class="card" id="idea-3">
+      <div class="card-title">
+        <span class="badge badge-amber">Idea 3</span> State & Prompt Caching Rules
+      </div>
+
+      <div class="point-block">
+        <div class="point-heading">1. Static Content Precedes Dynamic Data</div>
+        <p class="point-desc">
+          Place static instructions and schemas before dynamic conversation history and retrieval chunks. Injecting dynamic variables near the prompt head invalidates KV caching and doubles token bills.
+        </p>
+      </div>
+
+      <div class="point-block">
+        <div class="point-heading">2. Decouple Working and Persistent Memory</div>
+        <p class="point-desc">
+          Working memory holds immediate conversational context, while persistent storage tracks long-term facts across sessions. Re-injecting historical state into system prompts wastes tokens; seed working memory once at startup.
+        </p>
+      </div>
+    </section>
+
+    <!-- Idea 4: Control Topology & Stop Budgets -->
+    <section class="card" id="idea-4">
+      <div class="card-title">
+        <span class="badge badge-emerald">Idea 4</span> Control Topology & Stop Budgets
+      </div>
+
+      <div class="point-block">
+        <div class="point-heading">1. Sequential Subagents Beat Parallel Chaos</div>
+        <p class="point-desc">
+          Sequential subagents establish deterministic data flow and enable early exits when early steps fail. Parallel coordination causes race conditions, complex merging overhead, and unnecessary token spend.
+        </p>
+      </div>
+
+      <div class="point-block">
+        <div class="point-heading">2. The 4 Enforced Stop Ceilings</div>
+        <p class="point-desc">
+          The model's completion signal is its least reliable exit. The harness must independently enforce hard ceilings on tool steps, wall-clock duration, and dollar budget.
+        </p>
+      </div>
+
+      <div class="point-block">
+        <div class="point-heading">3. Loop Engineering vs. Graph Engineering</div>
+        <p class="point-desc">
+          Start with a single agent loop. Move decisions into a rigid graph topology only when failure must be physically impossible rather than merely unlikely.
+        </p>
+      </div>
+    </section>
+
+    <!-- Idea 5: Human Gates & The Eval Pyramid -->
+    <section class="card" id="idea-5">
+      <div class="card-title">
+        <span class="badge badge-rose">Idea 5</span> Human Gates & The Evaluation Pyramid
+      </div>
+
+      <div class="point-block">
+        <div class="point-heading">1. Gate on Irreversibility, Never Importance</div>
+        <p class="point-desc">
+          Gate actions mechanically based on whether another tool can undo them. Reads and drafts are reversible, while publishing or deleting are not; gating everything causes approval fatigue.
+        </p>
+      </div>
+
+      <div class="point-block">
+        <div class="point-heading">2. The Three-Tier Evaluation Pyramid</div>
+        <p class="point-desc">
+          Unit test harness state transitions deterministically in CI without model calls. Evaluate non-deterministic outputs via sampling rubrics and periodic LLM-as-a-judge regression tests.
+        </p>
+      </div>
+    </section>
+
+    <!-- Source Attribution & Reference -->
+    <div class="source-card">
+      <div class="source-card-header">
+        <div class="source-badge">
+          <span>📚 Original Source &amp; Attribution</span>
+        </div>
+        <a href="https://x.com/kmeanskaran/status/2090436724250026177" target="_blank" rel="noopener noreferrer" class="source-link-btn">
+          View Original Thread on X &rarr;
+        </a>
+      </div>
+      <div class="source-card-body">
+        <p>
+          This visual digest synthesizes concepts from a technical engineering breakdown on <strong>X (Twitter)</strong> authored by <strong>Karan🧋</strong> (<a href="https://x.com/kmeanskaran" target="_blank" rel="noopener noreferrer">@kmeanskaran</a>) on the scaffolding and harness architecture required outside the LLM.
+        </p>
+        <div class="source-card-meta">
+          <span>Original Thread: <a href="https://x.com/kmeanskaran/status/2090436724250026177" target="_blank" rel="noopener noreferrer">https://x.com/kmeanskaran/status/2090436724250026177</a></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const monsterData = {
+        'idea-1': {
+          num: '1',
+          name: 'Ollie',
+          emoji: '🐙',
+          badge: 'Workloads',
+          status: 'Ollie is guiding Idea 1',
+          quote: 'Whoa there! Agent jobs take minutes, not milliseconds. Do not hold open synchronous HTTP connections or you will time out! Always size workers for async I/O wait, not CPU cores.',
+          color: '#ea580c',
+          bg: '#fff7ed',
+          border: '#fed7aa',
+          svg: '<svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><path d="M 40 30 Q 30 15 25 18" fill="none" stroke="#facc15" stroke-width="5" stroke-linecap="round"/><circle cx="23" cy="18" r="6" fill="#facc15"/><path d="M 80 30 Q 90 15 95 18" fill="none" stroke="#facc15" stroke-width="5" stroke-linecap="round"/><circle cx="97" cy="18" r="6" fill="#facc15"/><path d="M 60 25 C 28 25, 25 60, 25 85 C 25 105, 35 125, 42 120 C 50 115, 55 105, 60 95 C 65 105, 70 115, 78 120 C 85 125, 95 105, 95 85 C 95 60, 92 25, 60 25 Z" fill="#fb923c"/><circle cx="60" cy="52" r="14" fill="#ffffff"/><circle cx="60" cy="52" r="7" fill="#0f172a"/><circle cx="58" cy="50" r="2.5" fill="#ffffff"/><path d="M 42 75 Q 60 90 78 75 Z" fill="#0f172a"/><polygon points="45,75 49,81 53,75 57,81 61,75 65,81 69,75 73,81 75,75" fill="#ffffff"/></svg>'
+        },
+        'idea-2': {
+          num: '2',
+          name: 'Boxy',
+          emoji: '📦',
+          badge: 'Tool Design',
+          status: 'Boxy is guiding Idea 2',
+          quote: 'Keep tools small and strictly typed! Five single-purpose tools beat one giant confusing function every single time. And never forget execution timeouts on every tool!',
+          color: '#ca8a04',
+          bg: '#fefce8',
+          border: '#fef08a',
+          svg: '<svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><path d="M 45 35 C 40 25, 32 20, 36 12 C 40 5, 50 12, 44 22" fill="none" stroke="#eab308" stroke-width="4.5" stroke-linecap="round"/><path d="M 75 35 C 80 25, 88 20, 84 12 C 80 5, 70 12, 76 22" fill="none" stroke="#eab308" stroke-width="4.5" stroke-linecap="round"/><rect x="30" y="35" width="60" height="55" rx="12" fill="#facc15"/><path d="M 30 55 C 18 55, 15 72, 30 76" fill="none" stroke="#eab308" stroke-width="5.5" stroke-linecap="round"/><path d="M 90 55 C 102 55, 105 72, 90 76" fill="none" stroke="#eab308" stroke-width="5.5" stroke-linecap="round"/><rect x="38" y="44" width="44" height="26" rx="8" fill="#ffffff"/><circle cx="60" cy="57" r="7.5" fill="#0f172a"/><circle cx="58" cy="55" r="2.5" fill="#ffffff"/><path d="M 52 78 Q 62 84 72 76" fill="none" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/><path d="M 45 90 L 45 102 C 45 106, 38 106, 38 102" fill="none" stroke="#eab308" stroke-width="6" stroke-linecap="round"/><path d="M 75 90 L 75 102 C 75 106, 82 106, 82 102" fill="none" stroke="#eab308" stroke-width="6" stroke-linecap="round"/></svg>'
+        },
+        'idea-3': {
+          num: '3',
+          name: 'Pip',
+          emoji: '👾',
+          badge: 'State & Caching',
+          status: 'Pip is guiding Idea 3',
+          quote: 'Put static instructions and schemas first! If you slip dynamic variables near the top of the prompt, you will bust my KV prompt cache and quietly double the token bill.',
+          color: '#9333ea',
+          bg: '#faf5ff',
+          border: '#e9d5ff',
+          svg: '<svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><polygon points="42,32 46,14 54,28 60,10 66,28 74,14 78,32" fill="#7e22ce"/><ellipse cx="60" cy="70" rx="36" ry="34" fill="#c084fc"/><circle cx="44" cy="58" r="6.5" fill="#ffffff"/><circle cx="44" cy="58" r="3.5" fill="#0f172a"/><circle cx="43" cy="57" r="1.2" fill="#ffffff"/><circle cx="60" cy="56" r="7.5" fill="#ffffff"/><circle cx="60" cy="56" r="4" fill="#0f172a"/><circle cx="59" cy="55" r="1.5" fill="#ffffff"/><circle cx="76" cy="58" r="6.5" fill="#ffffff"/><circle cx="76" cy="58" r="3.5" fill="#0f172a"/><circle cx="75" cy="57" r="1.2" fill="#ffffff"/><path d="M 50 78 Q 60 86 70 78" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/><path d="M 62 82 C 62 88, 70 88, 70 82 Z" fill="#f43f5e"/><path d="M 28 66 Q 16 54 18 52" fill="none" stroke="#c084fc" stroke-width="5" stroke-linecap="round"/><path d="M 92 66 Q 104 54 102 52" fill="none" stroke="#c084fc" stroke-width="5" stroke-linecap="round"/><rect x="44" y="100" width="8" height="12" rx="4" fill="#7e22ce"/><rect x="68" y="100" width="8" height="12" rx="4" fill="#7e22ce"/></svg>'
+        },
+        'idea-4': {
+          num: '4',
+          name: 'Grum',
+          emoji: '💪',
+          badge: 'Orchestration',
+          status: 'Grum is guiding Idea 4',
+          quote: 'Line up your subagents sequentially! Parallel agents sound cool, but sequential data flow lets us exit early and save money the moment Step 1 fails.',
+          color: '#2563eb',
+          bg: '#eff6ff',
+          border: '#bfdbfe',
+          svg: '<svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="60" cy="62" r="32" fill="#3b82f6"/><path d="M 34 52 C 16 54, 18 84, 22 92" fill="none" stroke="#3b82f6" stroke-width="8" stroke-linecap="round"/><path d="M 86 52 C 104 54, 102 84, 98 92" fill="none" stroke="#3b82f6" stroke-width="8" stroke-linecap="round"/><circle cx="50" cy="50" r="6" fill="#ffffff"/><circle cx="50" cy="50" r="3" fill="#0f172a"/><circle cx="70" cy="50" r="6" fill="#ffffff"/><circle cx="70" cy="50" r="3" fill="#0f172a"/><path d="M 44 68 Q 60 62 76 68 Q 76 86 60 86 Q 44 86 44 68 Z" fill="#0f172a"/><polygon points="46,68 50,75 54,68 58,75 62,68 66,75 70,68 74,75" fill="#ffffff"/><polygon points="46,86 50,79 54,86 58,79 62,86 66,79 70,86 74,79" fill="#ffffff"/><rect x="46" y="90" width="9" height="18" rx="4" fill="#1d4ed8"/><rect x="65" y="90" width="9" height="18" rx="4" fill="#1d4ed8"/></svg>'
+        },
+        'idea-5': {
+          num: '5',
+          name: 'Radar',
+          emoji: '📡',
+          badge: 'Verification',
+          status: 'Radar is guiding Idea 5',
+          quote: 'Only ask humans to step in when an action is irreversible (like spending money or deleting databases)! For reversible reads and drafts, let me keep running.',
+          color: '#dc2626',
+          bg: '#fef2f2',
+          border: '#fecaca',
+          svg: '<svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><path d="M 48 48 Q 36 26 36 18" fill="none" stroke="#ef4444" stroke-width="4.5" stroke-linecap="round"/><circle cx="36" cy="18" r="7" fill="#ffffff"/><circle cx="36" cy="18" r="3.5" fill="#ef4444"/><path d="M 72 48 Q 84 26 84 18" fill="none" stroke="#ef4444" stroke-width="4.5" stroke-linecap="round"/><circle cx="84" cy="18" r="7" fill="#ffffff"/><circle cx="84" cy="18" r="3.5" fill="#ef4444"/><circle cx="60" cy="70" r="28" fill="#ef4444"/><circle cx="60" cy="64" r="11" fill="#ffffff"/><circle cx="60" cy="64" r="5.5" fill="#0f172a"/><circle cx="58" cy="62" r="2" fill="#ffffff"/><path d="M 50 82 Q 60 88 70 82" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/><polygon points="63,83 67,83 65,88" fill="#ffffff"/><path d="M 48 96 L 48 114 C 48 118, 40 118, 40 114" fill="none" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><path d="M 72 96 L 72 114 C 72 118, 80 118, 80 114" fill="none" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/></svg>'
+        }
+      };
+
+      const dinoMascot = document.getElementById('dino-mascot-img');
+      const dinoSpeech = document.getElementById('dino-speech-text');
+      const dinoBadge = document.getElementById('dino-tab-badge');
+      const dinoStatus = document.getElementById('dino-status-text');
+      const dinoSpeakerName = document.getElementById('dino-speaker-name');
+      const navLinks = document.querySelectorAll('.nav-links a');
+
+      // Initialize default Ollie SVG in embedded banner
+      if (dinoMascot) {
+        dinoMascot.innerHTML = monsterData['idea-1'].svg;
+      }
+
+      // Mount Floating Companion in Parent Viewport so it moves and stays with the reader everywhere!
+      let floatMascot = null;
+      let floatText = null;
+      let floatBadge = null;
+      let floatBubble = null;
+      let floatSpeakerName = null;
+
+      try {
+        const parentDoc = (window.parent && window.parent.document) ? window.parent.document : document;
+        const oldCompanion = parentDoc.getElementById('dino-floating-companion');
+        if (oldCompanion) oldCompanion.remove();
+
+        const floatCard = parentDoc.createElement('div');
+        floatCard.id = 'dino-floating-companion';
+        floatCard.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 999999; display: flex; align-items: flex-end; gap: 12px; font-family: Inter, -apple-system, sans-serif; pointer-events: auto; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);';
+
+        floatCard.innerHTML = '<div id="dino-float-bubble" style="background: #ffffff; border: 1.5px solid #fed7aa; border-radius: 16px; padding: 12px 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); max-width: 290px; font-size: 13.5px; color: #1e293b; line-height: 1.5; position: relative; transition: all 0.25s ease;">' +
+          '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">' +
+            '<span id="dino-float-speaker" style="font-weight: 800; font-size: 12px; color: #ea580c; text-transform: uppercase; letter-spacing: 0.03em;">🐙 Ollie Companion</span>' +
+            '<span id="dino-float-badge" style="font-size: 11px; font-weight: 700; background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; padding: 2px 8px; border-radius: 999px;">1. Workloads</span>' +
+          '</div>' +
+          '<div id="dino-float-text" style="transition: opacity 0.2s ease, transform 0.2s ease;">&ldquo;Whoa there! Agent jobs take minutes, not milliseconds. Do not hold open synchronous HTTP connections or you will time out! Always size workers for async I/O wait, not CPU cores.&rdquo;</div>' +
+        '</div>' +
+        '<div id="dino-float-mascot" style="width: 72px; height: 78px; cursor: pointer; flex-shrink: 0; filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.15)); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);" title="Click to hop!">' +
+          monsterData['idea-1'].svg +
+        '</div>';
+
+        parentDoc.body.appendChild(floatCard);
+
+        floatMascot = parentDoc.getElementById('dino-float-mascot');
+        floatText = parentDoc.getElementById('dino-float-text');
+        floatBadge = parentDoc.getElementById('dino-float-badge');
+        floatBubble = parentDoc.getElementById('dino-float-bubble');
+        floatSpeakerName = parentDoc.getElementById('dino-float-speaker');
+
+        if (floatMascot) {
+          floatMascot.title = "Click to cycle to the next monster!";
+          floatMascot.addEventListener('click', () => {
+            cycleToNextMonster();
+          });
+        }
+      } catch (e) {
+        console.warn('Could not mount floating companion to parent document:', e);
+      }
+
+      let currentMonsterId = 'idea-1';
+
+      function cycleToNextMonster() {
+        const keys = Object.keys(monsterData);
+        const nextIndex = (keys.indexOf(currentMonsterId) + 1) % keys.length;
+        const nextId = keys[nextIndex];
+        const target = document.getElementById(nextId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        updateDino(nextId);
+      }
+
+      function updateDino(ideaId) {
+        currentMonsterId = ideaId;
+        const data = monsterData[ideaId];
+        if (!data) return;
+
+        // Update nav link active state
+        navLinks.forEach(link => {
+          if (link.getAttribute('href') === '#' + ideaId) {
+            link.classList.add('active');
+            link.style.color = data.color;
+            link.style.background = data.bg;
+          } else {
+            link.classList.remove('active');
+            link.style.color = '';
+            link.style.background = '';
+          }
+        });
+
+        // Swap SVG & Hop animation on embedded mascot
+        if (dinoMascot) {
+          dinoMascot.innerHTML = data.svg;
+          dinoMascot.classList.remove('hop');
+          void dinoMascot.offsetWidth;
+          dinoMascot.classList.add('hop');
+        }
+
+        // Swap SVG & Hop animation on floating mascot
+        if (floatMascot) {
+          floatMascot.innerHTML = data.svg;
+          floatMascot.style.transform = 'translateY(-16px) scale(1.15) rotate(5deg)';
+          setTimeout(() => {
+            floatMascot.style.transform = 'translateY(0) scale(1) rotate(0deg)';
+          }, 320);
+        }
+
+        // Update embedded speech bubble text
+        if (dinoSpeech) {
+          dinoSpeech.style.opacity = '0';
+          dinoSpeech.style.transform = 'translateY(4px)';
+          setTimeout(() => {
+            dinoSpeech.textContent = '"' + data.quote + '"';
+            dinoSpeech.style.opacity = '1';
+            dinoSpeech.style.transform = 'translateY(0)';
+          }, 120);
+        }
+
+        // Update floating speech bubble text
+        if (floatText) {
+          floatText.style.opacity = '0';
+          floatText.style.transform = 'translateY(4px)';
+          setTimeout(() => {
+            floatText.textContent = '"' + data.quote + '"';
+            floatText.style.opacity = '1';
+            floatText.style.transform = 'translateY(0)';
+          }, 120);
+        }
+
+        // Update speaker titles
+        if (dinoSpeakerName) {
+          dinoSpeakerName.textContent = data.emoji + ' ' + data.name + ' Companion';
+        }
+        if (floatSpeakerName) {
+          floatSpeakerName.textContent = data.emoji + ' ' + data.name + ' Companion';
+          floatSpeakerName.style.color = data.color;
+        }
+
+        // Update badges
+        if (dinoBadge) {
+          dinoBadge.textContent = data.badge;
+          dinoBadge.style.color = data.color;
+          dinoBadge.style.background = data.bg;
+          dinoBadge.style.borderColor = data.border;
+        }
+        if (dinoStatus) {
+          dinoStatus.textContent = data.status;
+        }
+        if (floatBadge) {
+          floatBadge.textContent = data.num + '. ' + data.badge;
+          floatBadge.style.color = data.color;
+          floatBadge.style.background = data.bg;
+          floatBadge.style.borderColor = data.border;
+        }
+        if (floatBubble) {
+          floatBubble.style.borderColor = data.border;
+        }
+      }
+
+      // Intercept in-page anchor links to prevent iframe reload loops and smoothly scroll
+      navLinks.forEach((anchor) => {
+        anchor.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = anchor.getAttribute('href').slice(1);
+          const target = document.getElementById(targetId);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            updateDino(targetId);
+          }
+        });
+      });
+
+      // Click Mascot to cycle to next monster and hop!
+      if (dinoMascot) {
+        dinoMascot.title = "Click to cycle to the next monster!";
+        dinoMascot.addEventListener('click', () => {
+          cycleToNextMonster();
+        });
+      }
+
+      // IntersectionObserver so Monster Squad accompanies you as you scroll naturally through each section
+      const sections = document.querySelectorAll('section[id^="idea-"]');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            updateDino(entry.target.id);
+          }
+        });
+      }, {
+        rootMargin: '-20% 0px -55% 0px',
+        threshold: 0.1
+      });
+
+      sections.forEach(sec => observer.observe(sec));
+    });
+  </script>
+</body>
+</html>
