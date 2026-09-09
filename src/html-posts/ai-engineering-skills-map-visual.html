@@ -1,0 +1,1566 @@
+---
+title: "AI Engineering Skills Map: Coding Agents (Visual Digest)"
+description: "Interactive visual digest of Andrew Ng's framework for steering coding agents: shifting from writing syntax to spec architecture, calibrated autonomy, and layered evaluation."
+date: "2026-09-09"
+tags: ["x-digest","twitter-digest","coding-agents","ai-engineering","architecture","digest"]
+category: "⚡ X-Digest"
+featured: true
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Engineering Skills Map: Coding Agents</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: transparent;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --card-border-subtle: #f1f5f9;
+      --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 6px 16px rgba(0, 0, 0, 0.03);
+      --card-shadow-hover: 0 10px 24px rgba(0, 0, 0, 0.07);
+
+      --text-main: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+
+      --c-blue: #2563eb;
+      --c-blue-bg: #eff6ff;
+      --c-purple: #7c3aed;
+      --c-purple-bg: #f5f3ff;
+      --c-amber: #d97706;
+      --c-amber-bg: #fffbeb;
+      --c-emerald: #059669;
+      --c-emerald-bg: #ecfdf5;
+      --c-rose: #e11d48;
+      --c-rose-bg: #fff1f2;
+
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", SFMono-Regular, Consolas, monospace;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    html, body {
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    html::-webkit-scrollbar, body::-webkit-scrollbar {
+      display: none;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text-body);
+      font-family: var(--font-sans);
+      font-size: 16.5px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      padding: 6px 2px 60px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+
+    .stream-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      padding: 5px 14px 5px 6px;
+      margin-bottom: 16px;
+    }
+    .stream-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .stream-caption {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #1e40af;
+    }
+
+    .top-nav {
+      position: sticky;
+      top: 10px;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 999px;
+      padding: 10px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+
+    .nav-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    @keyframes dino-nav-bob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-2px) rotate(4deg); }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 5px 12px;
+      border-radius: 999px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--c-blue);
+      background: var(--c-blue-bg);
+    }
+
+    .nav-links a.active {
+      color: #ea580c;
+      background: #fff7ed;
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(234, 88, 12, 0.15);
+    }
+
+    .dino-companion-card {
+      background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+      border: 1.5px solid #fed7aa;
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 4px 16px rgba(234, 88, 12, 0.08);
+      position: relative;
+    }
+    .dino-mascot-box {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .dino-mascot-img {
+      width: 78px;
+      height: 82px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(234, 88, 12, 0.18));
+      animation: dino-float 2.8s infinite ease-in-out;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .dino-mascot-img:hover {
+      transform: scale(1.08) rotate(-4deg);
+    }
+    .dino-mascot-img.hop {
+      animation: dino-hop 0.45s ease;
+    }
+    @keyframes dino-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    @keyframes dino-hop {
+      0% { transform: translateY(0) scale(1); }
+      40% { transform: translateY(-14px) scale(1.1) rotate(5deg); }
+      70% { transform: translateY(-3px) scale(0.98); }
+      100% { transform: translateY(0) scale(1); }
+    }
+    .dino-status-pill {
+      font-size: 11px;
+      font-weight: 700;
+      color: #c2410c;
+      background: #ffedd5;
+      padding: 2px 9px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .dino-status-dot {
+      width: 6px;
+      height: 6px;
+      background: #f97316;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #f97316;
+    }
+    .dino-speech-wrap {
+      flex: 1;
+      background: #ffffff;
+      border: 1px solid #fed7aa;
+      border-radius: var(--radius-md);
+      padding: 13px 17px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+    .dino-speech-wrap::before {
+      content: "";
+      position: absolute;
+      left: -8px;
+      top: 24px;
+      border-width: 6px 8px 6px 0;
+      border-style: solid;
+      border-color: transparent #ffffff transparent transparent;
+    }
+    .dino-speech-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .dino-speaker-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dino-tab-badge {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #fff7ed;
+      color: #ea580c;
+      border: 1px solid #fed7aa;
+      transition: all 0.2s ease;
+    }
+    .dino-speech-bubble-text {
+      font-size: 14.5px;
+      color: #334155;
+      line-height: 1.55;
+      margin: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-blue { background: var(--c-blue-bg); color: var(--c-blue); border: 1px solid #bfdbfe; }
+    .badge-purple { background: var(--c-purple-bg); color: var(--c-purple); border: 1px solid #ddd6fe; }
+    .badge-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+
+    .header {
+      margin-bottom: 24px;
+    }
+
+    .header-meta {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .header-meta a {
+      color: var(--c-blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .header-meta a:hover {
+      text-decoration: underline;
+    }
+
+    .doc-title {
+      font-size: clamp(32px, 3.8vw, 42px);
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+    }
+
+    .insight-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 30px 32px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 40px;
+      scroll-margin-top: 24px;
+    }
+
+    .insight-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--c-blue);
+      margin-bottom: 12px;
+    }
+
+    .insight-quote {
+      font-size: 18.5px;
+      line-height: 1.6;
+      color: var(--text-main);
+      font-weight: 450;
+    }
+
+    .insight-quote strong {
+      font-weight: 750;
+      color: #0f172a;
+    }
+
+    .shift-track {
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid #f1f5f9;
+      display: grid;
+      grid-template-columns: 1fr auto 1.4fr;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .shift-node {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+    }
+
+    .shift-node.target {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+    }
+
+    .shift-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .shift-node.target .shift-label {
+      color: var(--c-blue);
+    }
+
+    .shift-text {
+      font-size: 14.5px;
+      font-weight: 650;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .shift-arrow-icon {
+      color: var(--c-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .section-head {
+      margin-top: 48px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      scroll-margin-top: 24px;
+    }
+
+    .section-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .tier-pill {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tier-1 {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .tier-2 {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      position: relative;
+    }
+
+    .stage-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--card-shadow);
+      padding: 24px 22px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+
+    .stage-card:hover {
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .stage-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .stage-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 15px;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .stage-title {
+      font-size: 18px;
+      font-weight: 750;
+      color: var(--text-main);
+    }
+
+    .stage-body {
+      font-size: 14.5px;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+
+    .skills-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .ref-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--card-shadow);
+      padding: 20px 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+
+    .ref-card:hover {
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-1px);
+    }
+
+    .ref-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 17px;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .bg-blue { background-color: var(--c-blue); }
+    .bg-purple { background-color: var(--c-purple); }
+    .bg-amber { background-color: var(--c-amber); }
+    .bg-emerald { background-color: var(--c-emerald); }
+    .bg-rose { background-color: var(--c-rose); }
+
+    .ref-content {
+      flex: 1;
+    }
+
+    .ref-title {
+      font-size: 17.5px;
+      font-weight: 750;
+      color: var(--text-main);
+      margin-bottom: 5px;
+      line-height: 1.35;
+    }
+
+    .ref-desc {
+      font-size: 15px;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+      background: #f1f5f9;
+      padding: 3px 6px;
+      border-radius: 5px;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+    }
+
+    .reality-row {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--card-shadow);
+      padding: 24px 28px;
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .reality-col-left {
+      background: #fff1f2;
+      border: 1px solid #ffe4e6;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .reality-col-right {
+      background: #f0fdf4;
+      border: 1px solid #dcfce7;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .reality-tag {
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .tag-hype { color: #e11d48; }
+    .tag-truth { color: #059669; }
+
+    .reality-text {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--text-main);
+    }
+
+    .reality-text strong {
+      color: #0f172a;
+    }
+
+    .deep-panel {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--card-shadow);
+      padding: 28px 30px;
+      margin-bottom: 22px;
+      scroll-margin-top: 24px;
+    }
+
+    .deep-panel-header {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .split-horizontal {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .info-tile {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+    }
+
+    .tile-alert {
+      background: #fff1f2;
+      border-color: #fecdd3;
+    }
+
+    .tile-success {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    .tile-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tile-alert .tile-title { color: #be123c; }
+    .tile-success .tile-title { color: #059669; }
+
+    .tile-text {
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: var(--text-body);
+    }
+
+    .tile-text strong {
+      color: var(--text-main);
+    }
+
+    .clean-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .clean-list li {
+      position: relative;
+      padding-left: 18px;
+      font-size: 14.5px;
+      line-height: 1.5;
+      color: var(--text-body);
+    }
+
+    .clean-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--c-blue);
+      font-size: 18px;
+      line-height: 1.3;
+    }
+
+    .eval-ladder-horizontal {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .eval-step {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+      padding: 12px 10px;
+      text-align: center;
+    }
+
+    .eval-step-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--c-blue);
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .eval-step-name {
+      font-size: 13px;
+      font-weight: 750;
+      color: var(--text-main);
+      line-height: 1.35;
+    }
+
+    .failure-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .failure-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--card-shadow);
+      padding: 22px 22px;
+      border-top: 4px solid #f43f5e;
+      transition: box-shadow 0.15s, transform 0.15s;
+      scroll-margin-top: 24px;
+    }
+
+    .failure-card:hover {
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .failure-card-title {
+      font-size: 16.5px;
+      font-weight: 750;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .failure-card-desc {
+      font-size: 14px;
+      color: var(--text-body);
+      line-height: 1.55;
+    }
+
+    .source-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      margin-top: 48px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+    .source-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .source-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #0f172a;
+    }
+    .source-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #0f172a;
+      color: #ffffff !important;
+      text-decoration: none !important;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+    .source-link-btn:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+    .source-card-body {
+      font-size: 14.5px;
+      color: var(--text-body);
+      line-height: 1.6;
+    }
+    .source-card-body strong {
+      color: var(--text-main);
+    }
+    .source-card-meta {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      word-break: break-all;
+    }
+
+    .footer {
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer a {
+      color: var(--c-blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media (max-width: 820px) {
+      .pipeline-grid {
+        grid-template-columns: 1fr;
+      }
+      .failure-grid {
+        grid-template-columns: 1fr;
+      }
+      .eval-ladder-horizontal {
+        grid-template-columns: 1fr;
+      }
+      .reality-row {
+        grid-template-columns: 1fr;
+      }
+      .shift-track {
+        grid-template-columns: 1fr;
+      }
+      .shift-arrow-icon {
+        transform: rotate(90deg);
+        margin: 2px 0;
+      }
+      .split-horizontal {
+        grid-template-columns: 1fr;
+      }
+      .top-nav {
+        display: none;
+      }
+      .dino-companion-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+
+    <!-- TOP STICKY NAV -->
+    <nav class="top-nav">
+      <div class="nav-title">
+        <span style="font-size: 20px; animation: dino-nav-bob 3s infinite ease-in-out; display: inline-block;">👾</span>
+        <span>AI Engineering Skills Map</span>
+      </div>
+      <div class="nav-links">
+        <a href="#core-insight" class="active">1. Core Insight</a>
+        <a href="#stages">2. 3 Stages</a>
+        <a href="#skills">3. 5 Skills</a>
+        <a href="#deep-dive">4. Deep Dive</a>
+        <a href="#failures">5. Failure Modes</a>
+      </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="stream-banner">
+        <div class="stream-pill">
+          <span>⚡ X-Digest</span>
+        </div>
+        <span class="stream-caption">Curated technical synthesis from high-signal engineering discussions on X</span>
+      </div>
+
+      <div class="header-meta">
+        <span class="badge badge-purple">Agentic Engineering</span>
+        <span class="badge badge-blue">Visual Digest</span>
+        <span class="badge badge-green">Framework Map</span>
+        <span>•</span>
+        <span>2026-09-09</span>
+        <span>•</span>
+        <span>6 min read</span>
+      </div>
+      <h1 class="doc-title">AI Engineering Skills Map: Coding Agents</h1>
+    </header>
+
+    <!-- MONSTER COMPANION GUIDE BANNER -->
+    <div class="dino-companion-card" id="dino-companion-card">
+      <div class="dino-mascot-box">
+        <div class="dino-mascot-img" id="dino-mascot-img" title="Click me to cycle monsters!" style="width: 78px; height: 84px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+          <!-- Monster SVG dynamically inserted -->
+        </div>
+        <div class="dino-status-pill">
+          <span class="dino-status-dot"></span>
+          <span id="dino-status-text">Ollie is guiding Core Insight</span>
+        </div>
+      </div>
+      <div class="dino-speech-wrap">
+        <div class="dino-speech-header">
+          <div class="dino-speaker-title">
+            <span id="dino-speaker-name">🐙 Ollie Companion</span>
+          </div>
+          <span class="dino-tab-badge" id="dino-tab-badge">Core Insight</span>
+        </div>
+        <p class="dino-speech-bubble-text" id="dino-speech-text">
+          &ldquo;Don't just watch AI write code! Your new role is architecting tight specs, making high-level design decisions, and verifying outputs.&rdquo;
+        </p>
+      </div>
+    </div>
+
+    <!-- THE CORE INSIGHT & HORIZONTAL ROLE SHIFT -->
+    <section class="insight-card" id="core-insight">
+      <div class="insight-header">
+        <span>💡</span> The Core Insight
+      </div>
+      <p class="insight-quote">
+        Steering coding agents (Cursor, Claude Code, Codex, Aider) isn't about sitting back while AI builds your app. It is classic software engineering all over again—except your role has shifted from <strong>writing syntax</strong> to <strong>architecting specs, making high-level decisions, and verifying outputs</strong>.
+      </p>
+
+      <div class="shift-track">
+        <div class="shift-node">
+          <div class="shift-label">Classic Role</div>
+          <div class="shift-text">Writing Syntax &amp; Manual Implementation</div>
+        </div>
+        <div class="shift-arrow-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="shift-node target">
+          <div class="shift-label">Agentic Engineering Role</div>
+          <div class="shift-text">Architecting Specs · High-Level Decisions · Verifying Outputs</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. The 3 Core Stages -->
+    <section id="stages">
+      <div class="section-head">
+        <div class="section-left">
+          <span class="section-icon">🔄</span>
+          <h2 class="section-title">The 3 Core Stages</h2>
+        </div>
+        <span class="tier-pill tier-1">Tier 1 · Quick Digest</span>
+      </div>
+
+      <div class="pipeline-grid">
+        <div class="stage-card">
+          <div class="stage-top">
+            <div class="stage-number bg-blue">1</div>
+            <h3 class="stage-title">Planning</h3>
+          </div>
+          <p class="stage-body">
+            Brainstorm, investigate the codebase, interrogate assumptions, and draft tight specifications.
+          </p>
+        </div>
+
+        <div class="stage-card">
+          <div class="stage-top">
+            <div class="stage-number bg-purple">2</div>
+            <h3 class="stage-title">Execution</h3>
+          </div>
+          <p class="stage-body">
+            Calibrate autonomy, pair-program on edge cases, and run automated tests.
+          </p>
+        </div>
+
+        <div class="stage-card">
+          <div class="stage-top">
+            <div class="stage-number bg-emerald">3</div>
+            <h3 class="stage-title">Deployment &amp; Monitoring</h3>
+          </div>
+          <p class="stage-body">
+            Release behind CI/CD gates and use agents to monitor production logs and propose fixes.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. The 5 Key Skills -->
+    <section id="skills">
+      <div class="section-head">
+        <div class="section-left">
+          <span class="section-icon">🛠️</span>
+          <h2 class="section-title">The 5 Key Skills</h2>
+        </div>
+        <span class="tier-pill tier-1">Tier 1 · Skills</span>
+      </div>
+
+      <div class="skills-stack">
+        <div class="ref-card">
+          <div class="ref-badge bg-blue">1</div>
+          <div class="ref-content">
+            <h3 class="ref-title">Directing the Workflow</h3>
+            <p class="ref-desc">Knowing when to advance vs. when to hit pause, backtrack, and rethink the approach.</p>
+          </div>
+        </div>
+
+        <div class="ref-card">
+          <div class="ref-badge bg-purple">2</div>
+          <div class="ref-content">
+            <h3 class="ref-title">Enabling Autonomy</h3>
+            <p class="ref-desc">Knowing how much freedom to grant the agent, managing context windows, and safely orchestrating parallel agents.</p>
+          </div>
+        </div>
+
+        <div class="ref-card">
+          <div class="ref-badge bg-amber">3</div>
+          <div class="ref-content">
+            <h3 class="ref-title">Reviewing &amp; Evals</h3>
+            <p class="ref-desc">Designing layered tests (unit, functional, visual diffs, LLM-as-a-judge) because agent outputs are non-deterministic.</p>
+          </div>
+        </div>
+
+        <div class="ref-card">
+          <div class="ref-badge bg-emerald">4</div>
+          <div class="ref-content">
+            <h3 class="ref-title">Customizing the Agent</h3>
+            <p class="ref-desc">Curating context files (<code>AGENTS.md</code>), hooking up MCP servers, building custom skills, and clearing agent-generated tech debt.</p>
+          </div>
+        </div>
+
+        <div class="ref-card">
+          <div class="ref-badge bg-rose">5</div>
+          <div class="ref-content">
+            <h3 class="ref-title">Agent Foundations</h3>
+            <p class="ref-desc">Understanding context limits, tool-calling mechanics, and common failure modes (hallucinated tests, premature completion).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Reality Check -->
+    <section style="margin-top: 24px;">
+      <div class="section-head">
+        <div class="section-left">
+          <span class="section-icon">🎯</span>
+          <h2 class="section-title">The Reality Check</h2>
+        </div>
+      </div>
+
+      <div class="reality-row">
+        <div class="reality-col-left">
+          <div class="reality-tag tag-hype">Social Media Hype</div>
+          <p class="reality-text">“Let the agent run all night.”</p>
+        </div>
+
+        <div class="reality-col-right">
+          <div class="reality-tag tag-truth">Engineering Reality</div>
+          <p class="reality-text">
+            Top engineering teams keep agents on a <strong>short, tight, iterative leash</strong> with smart human intervention at <strong>step 1</strong> instead of debugging at <strong>step 10</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tier 2: Deep Dive -->
+    <div style="margin-top: 56px;" id="deep-dive">
+      <div class="section-head">
+        <div class="section-left">
+          <span class="section-icon">🔬</span>
+          <h2 class="section-title">Tier 2: Deep-Dive Breakdown &amp; Application</h2>
+        </div>
+        <span class="tier-pill tier-2">Deep Dive</span>
+      </div>
+    </div>
+
+    <!-- 1. Planning -->
+    <article class="deep-panel">
+      <h3 class="deep-panel-header">
+        <span>1.</span> Planning: Specs Are the New Source Code
+      </h3>
+
+      <div class="split-horizontal">
+        <div class="info-tile tile-alert">
+          <div class="tile-title">
+            <span>⚠️</span> The Problem
+          </div>
+          <p class="tile-text">
+            <strong>80% of agent bugs are specification bugs.</strong> An underspecified prompt forces the agent to guess your requirements.
+          </p>
+        </div>
+
+        <div class="info-tile">
+          <div class="tile-title" style="color: var(--c-blue);">
+            <span>✦</span> The Best Practice
+          </div>
+          <ul class="clean-list">
+            <li>Write clear architectural boundary conditions <em>before</em> generating code.</li>
+            <li>Interrogate trade-offs upfront: performance vs. simplicity, dependencies vs. custom code.</li>
+            <li>Treat Markdown spec files (<code>spec.md</code> or <code>plan.md</code>) as the primary artifact of your engineering work.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2. Execution -->
+    <article class="deep-panel">
+      <h3 class="deep-panel-header">
+        <span>2.</span> Execution: Calibrated Autonomy &amp; Verification
+      </h3>
+
+      <div class="split-horizontal">
+        <div class="info-tile">
+          <div class="tile-title" style="color: var(--text-main);">
+            <span>⇄</span> Pair-Programming vs. Delegation
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+            <div style="padding: 12px 14px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: var(--radius-sm);">
+              <div style="font-size: 13.5px; font-weight: 750; color: var(--c-blue); margin-bottom: 3px;">Interactive Mode</div>
+              <div style="font-size: 14px; color: var(--text-body);">Best for exploratory tasks, unfamiliar codebases, or complex debugging.</div>
+            </div>
+            <div style="padding: 12px 14px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-sm);">
+              <div style="font-size: 13.5px; font-weight: 750; color: #1e40af; margin-bottom: 3px;">Delegated Mode</div>
+              <div style="font-size: 14px; color: var(--text-body);">Best for well-isolated modules with explicit test coverage and strict exit criteria.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-tile tile-success">
+          <div class="tile-title">
+            <span>✓</span> Verification Over Manual Code Review
+          </div>
+          <p class="tile-text">
+            <strong>Don't read every line of generated syntax manually.</strong> Set up automated test harnesses (unit tests, integration tests, behavioral assertions) and make passing them the agent's definition of "done."
+          </p>
+        </div>
+      </div>
+
+      <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid #f1f5f9;">
+        <div style="font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 8px;">
+          Layered Evaluation Stack (Fast → Semantic)
+        </div>
+        <div class="eval-ladder-horizontal">
+          <div class="eval-step">
+            <div class="eval-step-num">L1</div>
+            <div class="eval-step-name">Unit Tests</div>
+          </div>
+          <div class="eval-step">
+            <div class="eval-step-num">L2</div>
+            <div class="eval-step-name">Functional Tests</div>
+          </div>
+          <div class="eval-step">
+            <div class="eval-step-num">L3</div>
+            <div class="eval-step-name">Behavioral Asserts</div>
+          </div>
+          <div class="eval-step">
+            <div class="eval-step-num">L4</div>
+            <div class="eval-step-name">Visual Diffs</div>
+          </div>
+          <div class="eval-step">
+            <div class="eval-step-num">L5</div>
+            <div class="eval-step-name">LLM-as-a-Judge</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3. Environment & Context Hygiene -->
+    <article class="deep-panel">
+      <h3 class="deep-panel-header">
+        <span>3.</span> Environment &amp; Context Hygiene
+      </h3>
+
+      <div class="split-horizontal">
+        <div class="info-tile">
+          <div class="tile-title" style="color: var(--c-purple);">
+            <span>📄</span> Standing Context Files (<code>AGENTS.md</code> / <code>CLAUDE.md</code>)
+          </div>
+          <ul class="clean-list">
+            <li>Store build/test commands, formatting rules, and folder structure conventions at repo root.</li>
+            <li>Document anti-patterns and known traps so the agent doesn't repeat past mistakes.</li>
+          </ul>
+        </div>
+
+        <div class="info-tile">
+          <div class="tile-title" style="color: var(--c-emerald);">
+            <span>🔌</span> Extensibility via Tools &amp; MCP
+          </div>
+          <ul class="clean-list">
+            <li>Equip the agent with project-specific capabilities using Model Context Protocol (MCP) servers and reusable skills rather than hardcoding instructions into every prompt.</li>
+            <li>Periodically prune obsolete tools and rules to keep context windows lean and performant.</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- 4. Failure Modes -->
+    <section id="failures" style="margin-top: 28px;">
+      <div class="section-head">
+        <div class="section-left">
+          <span class="section-icon">⚠️</span>
+          <h2 class="section-title">4. Failure Modes to Watch Out For</h2>
+        </div>
+      </div>
+
+      <div class="failure-grid">
+        <div class="failure-card">
+          <h4 class="failure-card-title">
+            <span>⚙️</span> Overengineering
+          </h4>
+          <p class="failure-card-desc">
+            Agents tend to build abstractions or add unnecessary dependencies for trivial tasks.
+          </p>
+        </div>
+
+        <div class="failure-card">
+          <h4 class="failure-card-title">
+            <span>👻</span> Hallucinated Tests
+          </h4>
+          <p class="failure-card-desc">
+            Agents will occasionally write weak or circular tests that pass without actually asserting real behavior.
+          </p>
+        </div>
+
+        <div class="failure-card">
+          <h4 class="failure-card-title">
+            <span>🛑</span> Premature Stops
+          </h4>
+          <p class="failure-card-desc">
+            Declaring a task complete before checking edge cases or running the full test suite.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Source Attribution & Reference -->
+    <div class="source-card">
+      <div class="source-card-header">
+        <div class="source-badge">
+          <span>📚 Original Source &amp; Attribution</span>
+        </div>
+        <a href="https://x.com/AndrewYNg/status/2095890279865721217" target="_blank" rel="noopener noreferrer" class="source-link-btn">
+          View Original Thread on X &rarr;
+        </a>
+      </div>
+      <div class="source-card-body">
+        <p>
+          This visual digest synthesizes the framework published on <strong>X (Twitter)</strong> by <strong>Andrew Ng</strong> (<a href="https://x.com/AndrewYNg" target="_blank" rel="noopener noreferrer">@AndrewYNg</a>) on the evolving skillset required to steer autonomous coding agents effectively.
+        </p>
+        <div class="source-card-meta">
+          <span>Original Thread: <a href="https://x.com/AndrewYNg/status/2095890279865721217" target="_blank" rel="noopener noreferrer">https://x.com/AndrewYNg/status/2095890279865721217</a></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <span>AI Engineering Skills Map · Curated Visual Digest</span>
+      <span>Published to <a href="/">Agentic Building Diaries</a></span>
+    </footer>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const monsterData = {
+      "core-insight": {
+            "num": "1",
+            "name": "Ollie",
+            "emoji": "🐙",
+            "badge": "Core Insight",
+            "status": "Ollie is guiding Idea 1",
+            "quote": "Don't just watch AI write code! Your new role is architecting tight specs, making high-level design decisions, and verifying outputs.",
+            "color": "#ea580c",
+            "bg": "#fff7ed",
+            "border": "#fed7aa",
+            "svg": "<svg viewBox=\"0 0 120 130\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;height:100%\"><path d=\"M 40 30 Q 30 15 25 18\" fill=\"none\" stroke=\"#facc15\" stroke-width=\"5\" stroke-linecap=\"round\"/><circle cx=\"23\" cy=\"18\" r=\"6\" fill=\"#facc15\"/><path d=\"M 80 30 Q 90 15 95 18\" fill=\"none\" stroke=\"#facc15\" stroke-width=\"5\" stroke-linecap=\"round\"/><circle cx=\"97\" cy=\"18\" r=\"6\" fill=\"#facc15\"/><path d=\"M 60 25 C 28 25, 25 60, 25 85 C 25 105, 35 125, 42 120 C 50 115, 55 105, 60 95 C 65 105, 70 115, 78 120 C 85 125, 95 105, 95 85 C 95 60, 92 25, 60 25 Z\" fill=\"#fb923c\"/><circle cx=\"60\" cy=\"52\" r=\"14\" fill=\"#ffffff\"/><circle cx=\"60\" cy=\"52\" r=\"7\" fill=\"#0f172a\"/><circle cx=\"58\" cy=\"50\" r=\"2.5\" fill=\"#ffffff\"/><path d=\"M 42 75 Q 60 90 78 75 Z\" fill=\"#0f172a\"/><polygon points=\"45,75 49,81 53,75 57,81 61,75 65,81 69,75 73,81 75,75\" fill=\"#ffffff\"/></svg>"
+      },
+      "stages": {
+            "num": "2",
+            "name": "Boxy",
+            "emoji": "📦",
+            "badge": "3 Stages",
+            "status": "Boxy is guiding Idea 2",
+            "quote": "Break agent work into distinct stages: Plan specs first, execute with paired verification, and deploy behind strict CI/CD gates.",
+            "color": "#ca8a04",
+            "bg": "#fefce8",
+            "border": "#fef08a",
+            "svg": "<svg viewBox=\"0 0 120 130\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;height:100%\"><path d=\"M 45 35 C 40 25, 32 20, 36 12 C 40 5, 50 12, 44 22\" fill=\"none\" stroke=\"#eab308\" stroke-width=\"4.5\" stroke-linecap=\"round\"/><path d=\"M 75 35 C 80 25, 88 20, 84 12 C 80 5, 70 12, 76 22\" fill=\"none\" stroke=\"#eab308\" stroke-width=\"4.5\" stroke-linecap=\"round\"/><rect x=\"30\" y=\"35\" width=\"60\" height=\"55\" rx=\"12\" fill=\"#facc15\"/><path d=\"M 30 55 C 18 55, 15 72, 30 76\" fill=\"none\" stroke=\"#eab308\" stroke-width=\"5.5\" stroke-linecap=\"round\"/><path d=\"M 90 55 C 102 55, 105 72, 90 76\" fill=\"none\" stroke=\"#eab308\" stroke-width=\"5.5\" stroke-linecap=\"round\"/><rect x=\"38\" y=\"44\" width=\"44\" height=\"26\" rx=\"8\" fill=\"#ffffff\"/><circle cx=\"60\" cy=\"57\" r=\"7.5\" fill=\"#0f172a\"/><circle cx=\"58\" cy=\"55\" r=\"2.5\" fill=\"#ffffff\"/><path d=\"M 52 78 Q 62 84 72 76\" fill=\"none\" stroke=\"#0f172a\" stroke-width=\"4\" stroke-linecap=\"round\"/><path d=\"M 45 90 L 45 102 C 45 106, 38 106, 38 102\" fill=\"none\" stroke=\"#eab308\" stroke-width=\"6\" stroke-linecap=\"round\"/><path d=\"M 75 90 L 75 102 C 75 106, 82 106, 82 102\" fill=\"none\" stroke=\"#eab308\" stroke-width=\"6\" stroke-linecap=\"round\"/></svg>"
+      },
+      "skills": {
+            "num": "3",
+            "name": "Pip",
+            "emoji": "👾",
+            "badge": "5 Skills",
+            "status": "Pip is guiding Idea 3",
+            "quote": "Master the 5 superpowers: direct workflow, calibrate autonomy, run layered evals, customize AGENTS.md, and respect context limits!",
+            "color": "#9333ea",
+            "bg": "#faf5ff",
+            "border": "#e9d5ff",
+            "svg": "<svg viewBox=\"0 0 120 130\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;height:100%\"><polygon points=\"42,32 46,14 54,28 60,10 66,28 74,14 78,32\" fill=\"#7e22ce\"/><ellipse cx=\"60\" cy=\"70\" rx=\"36\" ry=\"34\" fill=\"#c084fc\"/><circle cx=\"44\" cy=\"58\" r=\"6.5\" fill=\"#ffffff\"/><circle cx=\"44\" cy=\"58\" r=\"3.5\" fill=\"#0f172a\"/><circle cx=\"43\" cy=\"57\" r=\"1.2\" fill=\"#ffffff\"/><circle cx=\"60\" cy=\"56\" r=\"7.5\" fill=\"#ffffff\"/><circle cx=\"60\" cy=\"56\" r=\"4\" fill=\"#0f172a\"/><circle cx=\"59\" cy=\"55\" r=\"1.5\" fill=\"#ffffff\"/><circle cx=\"76\" cy=\"58\" r=\"6.5\" fill=\"#ffffff\"/><circle cx=\"76\" cy=\"58\" r=\"3.5\" fill=\"#0f172a\"/><circle cx=\"75\" cy=\"57\" r=\"1.2\" fill=\"#ffffff\"/><path d=\"M 50 78 Q 60 86 70 78\" fill=\"none\" stroke=\"#0f172a\" stroke-width=\"3.5\" stroke-linecap=\"round\"/><path d=\"M 62 82 C 62 88, 70 88, 70 82 Z\" fill=\"#f43f5e\"/><path d=\"M 28 66 Q 16 54 18 52\" fill=\"none\" stroke=\"#c084fc\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M 92 66 Q 104 54 102 52\" fill=\"none\" stroke=\"#c084fc\" stroke-width=\"5\" stroke-linecap=\"round\"/><rect x=\"44\" y=\"100\" width=\"8\" height=\"12\" rx=\"4\" fill=\"#7e22ce\"/><rect x=\"68\" y=\"100\" width=\"8\" height=\"12\" rx=\"4\" fill=\"#7e22ce\"/></svg>"
+      },
+      "deep-dive": {
+            "num": "4",
+            "name": "Grum",
+            "emoji": "💪",
+            "badge": "Deep Dive",
+            "status": "Grum is guiding Idea 4",
+            "quote": "80% of agent bugs are spec bugs! Write markdown specs before touching code, and test with layered harnesses from unit tests to LLM judges.",
+            "color": "#2563eb",
+            "bg": "#eff6ff",
+            "border": "#bfdbfe",
+            "svg": "<svg viewBox=\"0 0 120 130\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;height:100%\"><circle cx=\"60\" cy=\"62\" r=\"32\" fill=\"#3b82f6\"/><path d=\"M 34 52 C 16 54, 18 84, 22 92\" fill=\"none\" stroke=\"#3b82f6\" stroke-width=\"8\" stroke-linecap=\"round\"/><path d=\"M 86 52 C 104 54, 102 84, 98 92\" fill=\"none\" stroke=\"#3b82f6\" stroke-width=\"8\" stroke-linecap=\"round\"/><circle cx=\"50\" cy=\"50\" r=\"6\" fill=\"#ffffff\"/><circle cx=\"50\" cy=\"50\" r=\"3\" fill=\"#0f172a\"/><circle cx=\"70\" cy=\"50\" r=\"6\" fill=\"#ffffff\"/><circle cx=\"70\" cy=\"50\" r=\"3\" fill=\"#0f172a\"/><path d=\"M 44 68 Q 60 62 76 68 Q 76 86 60 86 Q 44 86 44 68 Z\" fill=\"#0f172a\"/><polygon points=\"46,68 50,75 54,68 58,75 62,68 66,75 70,68 74,75\" fill=\"#ffffff\"/><polygon points=\"46,86 50,79 54,86 58,79 62,86 66,79 70,86 74,79\" fill=\"#ffffff\"/><rect x=\"46\" y=\"90\" width=\"9\" height=\"18\" rx=\"4\" fill=\"#1d4ed8\"/><rect x=\"65\" y=\"90\" width=\"9\" height=\"18\" rx=\"4\" fill=\"#1d4ed8\"/></svg>"
+      },
+      "failures": {
+            "num": "5",
+            "name": "Radar",
+            "emoji": "📡",
+            "badge": "Failure Modes",
+            "status": "Radar is guiding Idea 5",
+            "quote": "Watch out for hallucinated tests, premature stops, and overengineering! Keep agents on a short, tight leash.",
+            "color": "#dc2626",
+            "bg": "#fef2f2",
+            "border": "#fecaca",
+            "svg": "<svg viewBox=\"0 0 120 130\" xmlns=\"http://www.w3.org/2000/svg\" style=\"width:100%;height:100%\"><path d=\"M 48 48 Q 36 26 36 18\" fill=\"none\" stroke=\"#ef4444\" stroke-width=\"4.5\" stroke-linecap=\"round\"/><circle cx=\"36\" cy=\"18\" r=\"7\" fill=\"#ffffff\"/><circle cx=\"36\" cy=\"18\" r=\"3.5\" fill=\"#ef4444\"/><path d=\"M 72 48 Q 84 26 84 18\" fill=\"none\" stroke=\"#ef4444\" stroke-width=\"4.5\" stroke-linecap=\"round\"/><circle cx=\"84\" cy=\"18\" r=\"7\" fill=\"#ffffff\"/><circle cx=\"84\" cy=\"18\" r=\"3.5\" fill=\"#ef4444\"/><circle cx=\"60\" cy=\"70\" r=\"28\" fill=\"#ef4444\"/><circle cx=\"60\" cy=\"64\" r=\"11\" fill=\"#ffffff\"/><circle cx=\"60\" cy=\"64\" r=\"5.5\" fill=\"#0f172a\"/><circle cx=\"58\" cy=\"62\" r=\"2\" fill=\"#ffffff\"/><path d=\"M 50 82 Q 60 88 70 82\" fill=\"none\" stroke=\"#0f172a\" stroke-width=\"3.5\" stroke-linecap=\"round\"/><polygon points=\"63,83 67,83 65,88\" fill=\"#ffffff\"/><path d=\"M 48 96 L 48 114 C 48 118, 40 118, 40 114\" fill=\"none\" stroke=\"#dc2626\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M 72 96 L 72 114 C 72 118, 80 118, 80 114\" fill=\"none\" stroke=\"#dc2626\" stroke-width=\"5\" stroke-linecap=\"round\"/></svg>"
+      }
+};
+
+      const dinoMascot = document.getElementById('dino-mascot-img');
+      const dinoSpeech = document.getElementById('dino-speech-text');
+      const dinoBadge = document.getElementById('dino-tab-badge');
+      const dinoStatus = document.getElementById('dino-status-text');
+      const dinoSpeakerName = document.getElementById('dino-speaker-name');
+      const navLinks = document.querySelectorAll('.nav-links a');
+
+      // Initialize default Ollie SVG in embedded banner
+      if (dinoMascot) {
+        dinoMascot.innerHTML = monsterData['core-insight'].svg;
+      }
+
+      // Mount Floating Companion in Parent Viewport
+      let floatMascot = null;
+      let floatText = null;
+      let floatBadge = null;
+      let floatBubble = null;
+      let floatSpeakerName = null;
+
+      try {
+        const parentDoc = (window.parent && window.parent.document) ? window.parent.document : document;
+        const oldCompanion = parentDoc.getElementById('dino-floating-companion');
+        if (oldCompanion) oldCompanion.remove();
+
+        const floatCard = parentDoc.createElement('div');
+        floatCard.id = 'dino-floating-companion';
+        floatCard.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 999999; display: flex; align-items: flex-end; gap: 12px; font-family: Inter, -apple-system, sans-serif; pointer-events: auto; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);';
+
+        floatCard.innerHTML = '<div id="dino-float-bubble" style="background: #ffffff; border: 1.5px solid #fed7aa; border-radius: 16px; padding: 12px 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); max-width: 290px; font-size: 13.5px; color: #1e293b; line-height: 1.5; position: relative; transition: all 0.25s ease;">' +
+          '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">' +
+            '<span id="dino-float-speaker" style="font-weight: 800; font-size: 12px; color: #ea580c; text-transform: uppercase; letter-spacing: 0.03em;">🐙 Ollie Companion</span>' +
+            '<span id="dino-float-badge" style="font-size: 11px; font-weight: 700; background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; padding: 2px 8px; border-radius: 999px;">1. Core Insight</span>' +
+          '</div>' +
+          '<div id="dino-float-text" style="transition: opacity 0.2s ease, transform 0.2s ease;">&ldquo;Don\'t just watch AI write code! Your new role is architecting tight specs, making high-level design decisions, and verifying outputs.&rdquo;</div>' +
+        '</div>' +
+        '<div id="dino-float-mascot" style="width: 72px; height: 78px; cursor: pointer; flex-shrink: 0; filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.15)); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);" title="Click to hop!">' +
+          monsterData['core-insight'].svg +
+        '</div>';
+
+        parentDoc.body.appendChild(floatCard);
+
+        floatMascot = parentDoc.getElementById('dino-float-mascot');
+        floatText = parentDoc.getElementById('dino-float-text');
+        floatBadge = parentDoc.getElementById('dino-float-badge');
+        floatBubble = parentDoc.getElementById('dino-float-bubble');
+        floatSpeakerName = parentDoc.getElementById('dino-float-speaker');
+
+        if (floatMascot) {
+          floatMascot.title = "Click to cycle to the next monster!";
+          floatMascot.addEventListener('click', () => {
+            cycleToNextMonster();
+          });
+        }
+      } catch (e) {
+        console.warn('Could not mount floating companion to parent document:', e);
+      }
+
+      let currentMonsterId = 'core-insight';
+
+      function cycleToNextMonster() {
+        const keys = Object.keys(monsterData);
+        const nextIndex = (keys.indexOf(currentMonsterId) + 1) % keys.length;
+        const nextId = keys[nextIndex];
+        const target = document.getElementById(nextId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        updateDino(nextId);
+      }
+
+      function updateDino(ideaId) {
+        currentMonsterId = ideaId;
+        const data = monsterData[ideaId];
+        if (!data) return;
+
+        navLinks.forEach(link => {
+          if (link.getAttribute('href') === '#' + ideaId) {
+            link.classList.add('active');
+            link.style.color = data.color;
+            link.style.background = data.bg;
+          } else {
+            link.classList.remove('active');
+            link.style.color = '';
+            link.style.background = '';
+          }
+        });
+
+        if (dinoMascot) {
+          dinoMascot.innerHTML = data.svg;
+          dinoMascot.classList.remove('hop');
+          void dinoMascot.offsetWidth;
+          dinoMascot.classList.add('hop');
+        }
+
+        if (floatMascot) {
+          floatMascot.innerHTML = data.svg;
+          floatMascot.style.transform = 'translateY(-16px) scale(1.15) rotate(5deg)';
+          setTimeout(() => {
+            floatMascot.style.transform = 'translateY(0) scale(1) rotate(0deg)';
+          }, 320);
+        }
+
+        if (dinoSpeech) {
+          dinoSpeech.style.opacity = '0';
+          dinoSpeech.style.transform = 'translateY(4px)';
+          setTimeout(() => {
+            dinoSpeech.textContent = '"' + data.quote + '"';
+            dinoSpeech.style.opacity = '1';
+            dinoSpeech.style.transform = 'translateY(0)';
+          }, 120);
+        }
+
+        if (floatText) {
+          floatText.style.opacity = '0';
+          floatText.style.transform = 'translateY(4px)';
+          setTimeout(() => {
+            floatText.textContent = '"' + data.quote + '"';
+            floatText.style.opacity = '1';
+            floatText.style.transform = 'translateY(0)';
+          }, 120);
+        }
+
+        if (dinoSpeakerName) {
+          dinoSpeakerName.textContent = data.emoji + ' ' + data.name + ' Companion';
+        }
+        if (floatSpeakerName) {
+          floatSpeakerName.textContent = data.emoji + ' ' + data.name + ' Companion';
+          floatSpeakerName.style.color = data.color;
+        }
+
+        if (dinoBadge) {
+          dinoBadge.textContent = data.badge;
+          dinoBadge.style.color = data.color;
+          dinoBadge.style.background = data.bg;
+          dinoBadge.style.borderColor = data.border;
+        }
+        if (dinoStatus) {
+          dinoStatus.textContent = data.status;
+        }
+        if (floatBadge) {
+          floatBadge.textContent = data.num + '. ' + data.badge;
+          floatBadge.style.color = data.color;
+          floatBadge.style.background = data.bg;
+          floatBadge.style.borderColor = data.border;
+        }
+        if (floatBubble) {
+          floatBubble.style.borderColor = data.border;
+        }
+      }
+
+      navLinks.forEach((anchor) => {
+        anchor.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = anchor.getAttribute('href').slice(1);
+          const target = document.getElementById(targetId);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            updateDino(targetId);
+          }
+        });
+      });
+
+      if (dinoMascot) {
+        dinoMascot.title = "Click to cycle to the next monster!";
+        dinoMascot.addEventListener('click', () => {
+          cycleToNextMonster();
+        });
+      }
+
+      const sections = document.querySelectorAll('section[id], div[id="deep-dive"]');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            updateDino(entry.target.id);
+          }
+        });
+      }, {
+        rootMargin: '-20% 0px -55% 0px',
+        threshold: 0.1
+      });
+
+      sections.forEach(sec => observer.observe(sec));
+    });
+  </script>
+</body>
+</html>

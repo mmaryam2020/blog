@@ -1,0 +1,64 @@
+---
+title: "AI Engineering Skills Map: Steering Coding Agents"
+description: "A high-signal breakdown of Andrew Ng's framework for planning, evaluating, and calibrating coding agents."
+date: "2026-09-08"
+tags: ["ai", "agents", "software-engineering", "curation"]
+category: "🤖 Agentic Engineering"
+---
+
+> **Source**: [Andrew Ng on X (@AndrewYNg)](https://x.com/AndrewYNg/status/2095890279865721217)  
+> **Context**: Core competencies for AI engineers shifting from writing syntax to directing coding agents.
+
+---
+
+## ⚡ Tier 1: Quick Digest (High Signal)
+
+### 💡 The Core Insight
+Steering coding agents (Cursor, Claude Code, Codex, Aider) isn't about letting AI replace software engineering. It is classic software engineering all over again—except the human role has shifted from **writing syntax** to **architecting specs, making high-level decisions, and verifying outputs**.
+
+### 🔄 The 3 Core Stages
+* **1. Planning** — Brainstorm, interrogate assumptions, investigate the codebase, and write airtight technical specs.
+* **2. Execution** — Calibrate autonomy, pair-program on edge cases, and enforce automated tests.
+* **3. Deployment & Monitoring** — Release behind CI/CD gates and employ agents to monitor production logs and propose fixes.
+
+### 🛠️ The 5 Key Skills
+* **1. Directing the Workflow** — Knowing when to push forward vs. when to hit pause, backtrack, and rethink the approach.
+* **2. Enabling Autonomy** — Knowing how much freedom to give the agent, managing context windows, and safely orchestrating parallel agents.
+* **3. Reviewing & Evals** — Designing layered tests (unit, functional, visual diffs, LLM-as-a-judge) because agent output is non-deterministic.
+* **4. Customizing the Agent** — Curating context files (`AGENTS.md`), hooking up MCP servers, building custom skills, and clearing agent-generated tech debt.
+* **5. Agent Foundations** — Understanding context limits, tool-calling mechanics, and common failure modes (hallucinated tests, premature completion).
+
+### 🎯 The Reality Check
+> *"Social media hype says: 'Let the agent run all night.' In reality, top engineering teams keep agents on a short, tight, iterative leash with smart human intervention at step 1 instead of debugging at step 10."*
+
+---
+
+## 🔬 Tier 2: Deep-Dive Breakdown & Application
+
+### 1. Planning: Specs Are the New Source Code
+* **The Problem**: 80% of agent bugs are specification bugs. An underspecified prompt forces the agent to guess requirements.
+* **The Best Practice**:
+  * Write clear architectural boundary conditions *before* generating code.
+  * Interrogate trade-offs upfront: performance vs. simplicity, external dependencies vs. native code.
+  * Treat Markdown spec files (`spec.md` or `plan.md`) as the primary artifact of engineering work.
+
+### 2. Execution: Calibrated Autonomy & Verification
+* **Pair-Programming vs. Delegation**:
+  * *Interactive mode*: Best for exploratory tasks, unfamiliar codebases, or complex debugging.
+  * *Delegated mode*: Best for well-isolated modules with explicit test coverage and strict exit criteria.
+* **Verification Over Manual Code Review**:
+  * Avoid reading thousands of lines of generated syntax manually.
+  * Set up automated test harnesses (unit tests, integration tests, behavioral assertions) and make passing them the agent's definition of "done."
+
+### 3. Environment & Context Hygiene
+* **Standing Context Files (`AGENTS.md` / `CLAUDE.md`)**:
+  * Store build/test commands, formatting rules, and folder structure conventions at repo root.
+  * Document anti-patterns and known traps so the agent doesn't repeat past mistakes.
+* **Extensibility via Tools & MCP**:
+  * Equip the agent with project-specific capabilities using Model Context Protocol (MCP) servers and reusable skills rather than hardcoding instructions into every prompt.
+  * Periodically prune obsolete tools and rules to keep context windows lean and performant.
+
+### 4. Failure Modes to Watch Out For
+* **Overengineering**: Agents tend to build abstractions or add unnecessary dependencies for trivial tasks.
+* **Hallucinated Tests**: Agents will occasionally write weak or circular tests that pass without actually asserting real behavior.
+* **Premature Stops**: Declaring a task complete before checking edge cases or running the full test suite.
