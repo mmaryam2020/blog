@@ -19,6 +19,7 @@ const about = defineCollection({
     name: z.string(),
     role: z.string(),
     avatarText: z.string(),
+    avatarImage: z.string().optional(),
     github: z.string().url().optional(),
     twitter: z.string().url().optional(),
     linkedin: z.string().url().optional(),
