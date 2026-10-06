@@ -7,7 +7,7 @@ avatarImage: "/maryam_bw.jpg"
 github: "https://github.com/mmaryam2020"
 twitter: "https://x.com/MaryamMoad"
 linkedin: "https://www.linkedin.com/in/maryammo/"
-email: "mindmoation@hexora.ca"
+email: "mindmotion@hexora.ca"
 interests:
   - "Agentic Systems & Runtime Architecture"
   - "Technical Product Management"
@@ -44,4 +44,4 @@ I spend a lot of time reading about cognitive psychology. Turns out "how humans 
 
 I also run distance. It has the same feedback loop as systems and product work: track the signals, ignore the noise, adjust the pace, and deal with the occasional knee that completely disagrees with the plan.
 
-If you want to talk agents, systems, product thinking, or running, say hi at [mindmoation@hexora.ca](mailto:mindmoation@hexora.ca).
+If you want to talk agents, systems, product thinking, or running, say hi at [mindmotion@hexora.ca](mailto:mindmotion@hexora.ca).
