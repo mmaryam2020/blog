@@ -10,7 +10,7 @@ linkedin: "https://www.linkedin.com/in/maryammo/"
 email: "mindmotion@hexora.ca"
 interests:
   - "Agentic Systems & Runtime Architecture"
-  - "Developer Advocacy & AI Education"
+  - "Teaching & Speaking on AI Agents"
   - "Personal AI & Memory"
   - "Cognitive Psychology"
 ---
@@ -39,7 +39,7 @@ This blog is my lab notebook: what I shipped, what broke, and what I learned fiv
 
 - **AI Tinkerers Toronto, CLAWFEST with NVIDIA** (May 2026): *Moka: Filesystem Agent OS*
 
-## Developer Advocacy & Mentorship
+## Teaching & Mentorship
 
 I love translating sharp technical work into language that makes people feel smarter, not smaller:
 
@@ -51,6 +51,6 @@ I love translating sharp technical work into language that makes people feel sma
 
 I read a lot of cognitive psychology. Half of debugging an agent is realizing it makes the same reasoning mistakes people do, just ten times faster and with total confidence.
 
-I also run distance. It has the same feedback loop as systems work: track the signals, ignore the noise, adjust the pace, and deal with the occasional knee that completely disagrees with the plan.
+I also run distance. It has the same feedback loop as systems and product work: track the signals, ignore the noise, adjust the pace, and deal with the occasional knee that completely disagrees with the plan.
 
-Want to talk agents, developer advocacy, teaching, or why your AI is confidently wrong? Say hi at [mindmotion@hexora.ca](mailto:mindmotion@hexora.ca).
+Want to talk agents, teaching, or why your AI is confidently wrong? Say hi at mindmotion@hexora.ca.
