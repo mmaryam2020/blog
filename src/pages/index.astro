@@ -11,8 +11,7 @@ const essayPosts = allPosts.filter(post => !isEducationPost(post.data.category))
 const learnPosts = allPosts.filter(post => isEducationPost(post.data.category));
 
 const featuredPost = essayPosts.find((post) => post.data.featured) ?? essayPosts[0];
-const remainingEssayPosts = essayPosts.filter((post) => post.slug !== featuredPost?.slug);
-const latestEssayPosts = remainingEssayPosts.slice(0, 3);
+const latestEssayPosts = essayPosts.slice(0, 3);
 const latestLearnPosts = learnPosts.slice(0, 3);
 ---
 <Layout
