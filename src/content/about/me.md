@@ -1,7 +1,7 @@
 ---
 title: "Meet Maryam Moadeli"
 name: "Maryam Moadeli"
-role: "AI Systems Architect & Technical Product Lead"
+role: "AI Systems Architect"
 avatarText: "M"
 avatarImage: "/maryam_bw.jpg"
 github: "https://github.com/mmaryam2020"
@@ -10,7 +10,7 @@ linkedin: "https://www.linkedin.com/in/maryammo/"
 email: "mindmotion@hexora.ca"
 interests:
   - "Agentic Systems & Runtime Architecture"
-  - "Technical Product Management"
+  - "Developer Education & Interactive Learning"
   - "Local-first Tools & Memory Persistence"
   - "Long-distance Running"
 ---
