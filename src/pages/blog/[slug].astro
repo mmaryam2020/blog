@@ -4,6 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import Navbar from '../../components/Navbar.astro';
 import { format } from 'date-fns';
 import htmlPostReadingCss from '../../styles/html-post-reading.css?raw';
+import { isEducationPost, metaLabel } from '../../lib/utils';
 
 export async function getStaticPaths() {
   const posts = await getUnifiedPosts();
@@ -27,6 +28,9 @@ const getReadingTime = (body: string) => {
   return Math.ceil(words / wordsPerMinute).toString();
 };
 const isFullHtml = post.isHtml && (post.body.includes('<h1') || post.body.includes('<H1'));
+const metaPrefix = isEducationPost(post.data.category)
+  ? `${metaLabel(post.data.category)} / curated from x`
+  : metaLabel(post.data.category);
 
 let htmlBody = post.body;
 if (post.isHtml) {
@@ -47,7 +51,7 @@ if (post.isHtml) {
   }
 
   const dateStr = format(post.data.date, "MMM d, yyyy");
-  const metaLine = `agentic diaries / ${dateStr} / ${readTime} min read`;
+  const metaLine = `${metaPrefix} / ${dateStr} / ${readTime} min read`;
 
   // Standardize header meta line and strip top category/tags from all HTML posts
   htmlBody = htmlBody.replace(/<div class="header-top">[\s\S]*?<\/div>/i, `<div class="header-top">${metaLine}</div>`);
@@ -115,7 +119,7 @@ const iframeBody = post.isHtml
         <article class="prose">
           <div class="mb-8 pb-6 border-b border-border/60">
             <div class="font-mono text-xs md:text-sm text-[#3b3bd1] lowercase mb-4 tracking-normal">
-              agentic diaries / {format(post.data.date, "MMM d, yyyy")} / {getReadingTime(post.body)} min read
+              {metaPrefix} / {format(post.data.date, "MMM d, yyyy")} / {getReadingTime(post.body)} min read
             </div>
             <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-primary mb-4 leading-tight font-heading">
               {post.data.title}

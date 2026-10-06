@@ -1,6 +1,6 @@
 ---
 import { format } from 'date-fns';
-import { formatCategoryLabel } from '../lib/utils';
+import { formatCategoryLabel, metaLabel } from '../lib/utils';
 
 interface Props {
   title: string;
@@ -21,7 +21,7 @@ const categoryLabel = formatCategoryLabel(category);
 >
   <div class="flex flex-col h-full">
     <div class="font-mono text-xs text-accent lowercase mb-3">
-      agentic diaries / {format(date, "MMM d, yyyy")}
+      {metaLabel(category)} / {format(date, "MMM d, yyyy")}
     </div>
     
     <h3 class="font-heading text-xl font-bold tracking-tight text-foreground mb-3 group-hover:text-accent transition-colors line-clamp-2">

@@ -13,3 +13,13 @@ export function formatCategoryLabel(category?: string) {
     .replace(/\bdiaries\b/i, "Notes")
     .trim();
 }
+
+/** Curated posts (e.g. X digests) summarize other people's ideas, not original essays. */
+export function isEducationPost(category?: string) {
+  return !!category && /education|digest/i.test(category);
+}
+
+/** Lowercase label shown in the mono meta line on cards and post headers. */
+export function metaLabel(category?: string) {
+  return isEducationPost(category) ? "education" : "agentic diaries";
+}
