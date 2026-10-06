@@ -51,6 +51,4 @@ I love translating sharp technical work into language that makes people feel sma
 
 I read a lot of cognitive psychology. Half of debugging an agent is realizing it makes the same reasoning mistakes people do, just ten times faster and with total confidence.
 
-I also run distance. It has the same feedback loop as systems and product work: track the signals, ignore the noise, adjust the pace, and deal with the occasional knee that completely disagrees with the plan.
-
 Want to talk agents, teaching, or why your AI is confidently wrong? Say hi at mindmotion@hexora.ca.
