@@ -1,7 +1,7 @@
 ---
 title: "Meet Maryam Moadeli"
 name: "Maryam Moadeli"
-role: "Agentic Systems Architect & Developer Advocate"
+role: "AI Systems Architect, Tech Lead & Developer Advocate"
 avatarText: "M"
 avatarImage: "/maryam_bw.jpg"
 github: "https://github.com/mmaryam2020"
@@ -10,38 +10,47 @@ linkedin: "https://www.linkedin.com/in/maryammo/"
 email: "mindmotion@hexora.ca"
 interests:
   - "Agentic Systems & Runtime Architecture"
-  - "AI Education & Interactive Learning"
-  - "Local-first Tools & Memory Persistence"
-  - "Long-distance Running"
+  - "Developer Advocacy & AI Education"
+  - "Personal AI & Memory"
+  - "Cognitive Psychology"
 ---
 
-I build systems that are useful in real life, not just impressive in demos.
+I build AI systems that are useful in real life, not just impressive in demos. Then I explain how they work, usually with help from a cartoon monster.
 
-At Google, I operate across systems architecture and technical product management, sitting right in the middle between engineering teams and business leadership. I like being the person between big ideas and working software: the one asking, *"what problem are we actually solving?"* before the architecture diagram gets too confident.
+At Google, I lead AI systems from first idea to production, working with engineering teams and business leaders to turn messy problems into tools people actually use. I'm the one asking, *"what problem are we actually solving?"* before the architecture diagram gets too confident.
+
+## How I Got Here
+
+I started in electrical engineering, then moved into biomedical engineering. My first AI system that really mattered helped non-speaking children communicate, and it cut the time it took them to say something by 70%. That's still my bar: does this make someone's day easier?
 
 ## What I Care About
 
-Most agent demos are impressive once and unreliable forever. I spend my time on the less glamorous parts: deterministic tool validation, strict schemas, and error recovery that assumes things will break, because they usually do. 
-
-My sweet spot is making complex systems understandable, scalable, and calm under pressure.
+Most agent demos are impressive once and unreliable forever. I build the boring parts that make them work on day 100: validation, schemas, and recovery for when things break. They always do.
 
 ## What I'm Building
 
-My main personal testbed is **Moka**, an agent system exploring persistent memory, scheduling, and context that doesn't evaporate the second you close the tab. Parts of that work are open source in **NanoClaw**, while the fuller setup runs quietly in Docker, occasionally humbling me.
+**Moka** is my personal agent, my second brain and accountability partner. It remembers my wins, schedules my reminders, and occasionally humbles me. Parts of it are open source in **NanoClaw**.
 
-This blog is my lab notebook. I write about what I shipped, what broke, what surprised me, and what I learned five minutes after thinking, *"this should be easy."*
+I have a racing brain, so I build agents to keep up with it: one reads the news so I don't have to, another coaches my workouts from my own data. If it helps me, it usually helps someone else too.
 
-## Advisory & Mentorship
+This blog is my lab notebook: what I shipped, what broke, and what I learned five minutes after thinking, *"this should be easy."* In **Learn**, I turn dense ideas into visual guides, with Ollie and the rest of my companion squad.
+
+## Speaking
+
+- **AI Tinkerers Toronto, CLAWFEST with NVIDIA** (May 2026): *Moka: Filesystem Agent OS*
+
+## Developer Advocacy & Mentorship
 
 I love translating sharp technical work into language that makes people feel smarter, not smaller:
 
-- **Google for Startups Accelerator**: Technical mentor helping founders figure out where agents create real leverage versus where they're just expensive theater.
-- **ADPList**: 1,200+ minutes mentoring engineers, PMs, and architects. Long enough that I've started catching myself repeating my own advice.
+- **Google for Startups Accelerator**: helping founders tell real agent value from expensive theater.
+- **ADPList**: 1,200+ minutes mentoring engineers, PMs, and architects. Long enough that I catch myself repeating my own advice.
+- **Kaggle Fellowship**: guided data scientists building GenAI apps with Gemma.
 
 ## Outside The Repo
 
-I spend a lot of time reading about cognitive psychology. Turns out "how humans actually think" is fairly relevant when you're building software that's supposed to reason on its own. Half of debugging an agent is realizing it's making the exact same reasoning mistakes people do, just ten times faster and with absolute confidence.
+I read a lot of cognitive psychology. Half of debugging an agent is realizing it makes the same reasoning mistakes people do, just ten times faster and with total confidence.
 
-I also run distance. It has the same feedback loop as systems and product work: track the signals, ignore the noise, adjust the pace, and deal with the occasional knee that completely disagrees with the plan.
+I also run distance. It has the same feedback loop as systems work: track the signals, ignore the noise, adjust the pace, and deal with the occasional knee that completely disagrees with the plan.
 
-If you want to talk agents, systems, product thinking, or running, say hi at [mindmotion@hexora.ca](mailto:mindmotion@hexora.ca).
+Want to talk agents, developer advocacy, teaching, or why your AI is confidently wrong? Say hi at [mindmotion@hexora.ca](mailto:mindmotion@hexora.ca).
