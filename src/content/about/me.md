@@ -15,7 +15,7 @@ interests:
   - "Cognitive Psychology"
 ---
 
-I build AI systems that are useful in real life, not just impressive in demos. Then I explain how they work, usually with help from a cartoon monster.
+I build AI systems that are useful in real life, not just impressive in demos. Then I explain how they work, usually with help from Ollie and other companion friends.
 
 At Google, I lead AI systems from first idea to production, working with engineering teams and business leaders to turn messy problems into tools people actually use. I'm the one asking, *"what problem are we actually solving?"* before the architecture diagram gets too confident.
 
