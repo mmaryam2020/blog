@@ -4,12 +4,16 @@ import Navbar from '../components/Navbar.astro';
 import ArticleCard from '../components/ArticleCard.astro';
 import { getUnifiedPosts } from '../lib/posts';
 import { format } from 'date-fns';
-import { formatCategoryLabel } from '../lib/utils';
+import { formatCategoryLabel, isEducationPost } from '../lib/utils';
 
-const sortedPosts = await getUnifiedPosts();
-const featuredPost = sortedPosts.find((post) => post.data.featured) ?? sortedPosts[0];
-const remainingPosts = sortedPosts.filter((post) => post.slug !== featuredPost?.slug);
-const latestPosts = remainingPosts.slice(0, 3);
+const allPosts = await getUnifiedPosts();
+const essayPosts = allPosts.filter(post => !isEducationPost(post.data.category));
+const learnPosts = allPosts.filter(post => isEducationPost(post.data.category));
+
+const featuredPost = essayPosts.find((post) => post.data.featured) ?? essayPosts[0];
+const remainingEssayPosts = essayPosts.filter((post) => post.slug !== featuredPost?.slug);
+const latestEssayPosts = remainingEssayPosts.slice(0, 3);
+const latestLearnPosts = learnPosts.slice(0, 3);
 ---
 <Layout
   title="Agentic Diaries"
@@ -18,15 +22,36 @@ const latestPosts = remainingPosts.slice(0, 3);
   <Navbar />
   <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-20 md:py-32">
     <section class="flex flex-col items-center text-center mb-20 md:mb-24">
-      <span class="font-mono text-xs text-accent lowercase mb-4 inline-block">
-        agentic diaries / personal systems / public thinking
-      </span>
-      <h1 class="font-heading text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-6 leading-tight max-w-4xl">
-        Agentic Diaries
+      <div class="relative mb-6 inline-block">
+        <div class="w-32 h-32 mx-auto hover:-translate-y-2 transition-transform duration-300">
+          <svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg" class="w-full h-full drop-shadow-md"><path d="M 40 30 Q 30 15 25 18" fill="none" stroke="#facc15" stroke-width="5" stroke-linecap="round"/><circle cx="23" cy="18" r="6" fill="#facc15"/><path d="M 80 30 Q 90 15 95 18" fill="none" stroke="#facc15" stroke-width="5" stroke-linecap="round"/><circle cx="97" cy="18" r="6" fill="#facc15"/><path d="M 60 25 C 28 25, 25 60, 25 85 C 25 105, 35 125, 42 120 C 50 115, 55 105, 60 95 C 65 105, 70 115, 78 120 C 85 125, 95 105, 95 85 C 95 60, 92 25, 60 25 Z" fill="#fb923c"/><circle cx="60" cy="52" r="14" fill="#ffffff"/><circle cx="60" cy="52" r="7" fill="#0f172a"/><circle cx="58" cy="50" r="2.5" fill="#ffffff"/><path d="M 42 75 Q 60 90 78 75 Z" fill="#0f172a"/><polygon points="45,75 49,81 53,75 57,81 61,75 65,81 69,75 73,81 75,75" fill="#ffffff"/></svg>
+        </div>
+        
+        <div class="absolute top-4 left-full ml-4 hidden md:block w-52 text-left">
+          <div class="relative bg-card border border-border/80 shadow-sm rounded-2xl p-4">
+            <div class="absolute top-6 -left-2 w-4 h-4 bg-card border-l border-t border-border/80 -rotate-45"></div>
+            <p class="font-bold text-sm text-foreground mb-1">I'm Ollie! 👋</p>
+            <p class="text-xs text-muted-foreground leading-relaxed">I'm an interactive learning companion. My friends and I help explain complex topics in the Learn section.</p>
+          </div>
+        </div>
+      </div>
+      <h1 class="font-heading text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4 leading-tight max-w-4xl">
+        Hi, I'm Maryam.
       </h1>
-      <p class="text-lg md:text-xl text-[#4a4a4a] max-w-2xl font-medium leading-relaxed">
-        Notes from building AI systems, thinking through messy ideas, and figuring things out in public.
+      <p class="text-lg md:text-xl text-[#4a4a4a] max-w-2xl font-medium leading-relaxed mb-8">
+        I build agent systems and teach how they work. To make the technical concepts clearer, I build interactive learning companions (like Ollie!) to guide you through my tutorials.
       </p>
+      
+      <div class="flex flex-wrap items-center justify-center gap-4 text-sm font-semibold">
+        {featuredPost && (
+          <a href={`/blog/${featuredPost.slug}`} class="bg-foreground text-background px-6 py-3 rounded-full hover:bg-accent hover:text-white transition-colors">
+            Read the featured essay &rarr;
+          </a>
+        )}
+        <a href="/about" class="text-[#4a4a4a] hover:text-foreground transition-colors px-4 py-3">
+          About me &rarr;
+        </a>
+      </div>
     </section>
 
     {featuredPost && (
@@ -81,13 +106,46 @@ const latestPosts = remainingPosts.slice(0, 3);
         </a>
       </div>
       
-      {latestPosts.length === 0 ? (
+      {latestEssayPosts.length === 0 ? (
         <div class="text-center py-20 bg-card rounded-[24px] border border-border/50">
           <p class="text-muted-foreground">No posts found yet. Check back soon!</p>
         </div>
       ) : (
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {latestPosts.map((post) => (
+          {latestEssayPosts.map((post) => (
+            <ArticleCard
+              title={post.data.title}
+              description={post.data.description}
+              date={post.data.date}
+              tags={post.data.tags}
+              category={post.data.category}
+              href={`/blog/${post.slug}`}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+
+    <section class="mb-24">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="font-heading text-2xl font-bold tracking-tight text-foreground">Learn</h2>
+          <p class="text-sm text-[#4a4a4a] mt-2">
+            Digests, explainers, tutorials, and talk slides.
+          </p>
+        </div>
+        <a href="/learn" class="font-mono text-xs text-accent hover:underline lowercase">
+          view all &rarr;
+        </a>
+      </div>
+      
+      {latestLearnPosts.length === 0 ? (
+        <div class="text-center py-20 bg-card rounded-[24px] border border-border/50">
+          <p class="text-muted-foreground">No learn posts found yet. Check back soon!</p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {latestLearnPosts.map((post) => (
             <ArticleCard
               title={post.data.title}
               description={post.data.description}

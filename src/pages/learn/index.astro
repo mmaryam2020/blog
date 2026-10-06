@@ -6,7 +6,7 @@ import { getUnifiedPosts } from '../../lib/posts';
 import { isEducationPost } from '../../lib/utils';
 
 const allPosts = await getUnifiedPosts();
-const sortedPosts = allPosts.filter(post => !isEducationPost(post.data.category));
+const sortedPosts = allPosts.filter(post => isEducationPost(post.data.category));
 
 // Helper to calculate reading time
 const getReadingTime = (body: string) => {
@@ -15,18 +15,18 @@ const getReadingTime = (body: string) => {
   return Math.ceil(words / wordsPerMinute).toString();
 };
 ---
-<Layout title="Essays | Agentic Diaries">
+<Layout title="Learn | Agentic Diaries">
   <Navbar />
   <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-20">
     <div class="mb-16">
       <span class="font-mono text-xs text-accent lowercase mb-3 inline-block">
-        agentic diaries / essays
+        agentic diaries / learn
       </span>
       <h1 class="font-heading text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4 max-w-3xl">
-        Essays on AI, memory, and building things in public.
+        Learn: Digests, Explainers, and Tutorials.
       </h1>
       <p class="text-lg text-[#4a4a4a] max-w-2xl leading-relaxed">
-        Real stories, technical depth, and thoughts that come from actually building.
+        Curated resources, system design breakdowns, and step-by-step guides for building AI systems.
       </p>
     </div>
 

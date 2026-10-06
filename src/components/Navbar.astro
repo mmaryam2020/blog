@@ -11,7 +11,10 @@ const pathname = new URL(Astro.request.url).pathname;
         Home
       </a>
       <a href="/blog" class={`transition-colors hover:text-foreground ${pathname.startsWith("/blog") ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
-        Blog
+        Essays
+      </a>
+      <a href="/learn" class={`transition-colors hover:text-foreground ${pathname.startsWith("/learn") ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
+        Learn
       </a>
       <a href="/about" class={`transition-colors hover:text-foreground ${pathname.startsWith("/about") ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
         About
