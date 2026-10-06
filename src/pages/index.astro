@@ -18,56 +18,46 @@ const latestPosts = remainingPosts.slice(0, 3);
   <Navbar />
   <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-20 md:py-32">
     <section class="flex flex-col items-center text-center mb-20 md:mb-24">
-      <span class="px-3 py-1 text-xs font-bold tracking-[0.2em] uppercase bg-accent-background text-accent rounded-full mb-5 inline-block border border-accent/20">
-        Personal systems, public thinking
+      <span class="font-mono text-xs text-accent lowercase mb-4 inline-block">
+        agentic diaries / personal systems / public thinking
       </span>
-      <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-primary mb-6 leading-tight max-w-4xl">
+      <h1 class="font-heading text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-6 leading-tight max-w-4xl">
         Agentic Diaries
       </h1>
-      <p class="text-lg md:text-xl text-muted-foreground max-w-2xl font-medium leading-relaxed">
+      <p class="text-lg md:text-xl text-[#4a4a4a] max-w-2xl font-medium leading-relaxed">
         Notes from building AI systems, thinking through messy ideas, and figuring things out in public.
       </p>
     </section>
 
     {featuredPost && (
       <section class="mb-24">
-        <div class="rounded-[32px] border border-border/80 bg-card p-8 md:p-10 shadow-[0_10px_40px_rgba(0,0,0,0.04)]">
-          <div class="flex items-center gap-3 mb-5 flex-wrap">
-            <span class="px-3 py-1 text-xs font-bold tracking-[0.18em] uppercase bg-accent text-white rounded-full">
-              Start here
-            </span>
-            {featuredPost.data.category && (
-              <span class="text-xs font-semibold uppercase tracking-[0.18em] text-accent">
-                {formatCategoryLabel(featuredPost.data.category)}
-              </span>
-            )}
-            <span class="text-sm text-muted-foreground">
-              {format(featuredPost.data.date, "MMMM d, yyyy")}
-            </span>
+        <div class="rounded-[20px] border border-border/80 bg-card p-8 md:p-10 shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
+          <div class="font-mono text-xs text-accent lowercase mb-4">
+            featured / {format(featuredPost.data.date, "MMM d, yyyy")}
           </div>
 
           <div class="grid gap-8 md:grid-cols-[1.4fr_0.8fr] md:items-end">
             <div>
-              <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight text-primary leading-tight mb-4">
+              <h2 class="font-heading text-3xl md:text-5xl font-bold tracking-tight text-foreground leading-tight mb-4">
                 <a href={`/blog/${featuredPost.slug}`} class="hover:text-accent transition-colors">
                   {featuredPost.data.title}
                 </a>
               </h2>
-              <p class="text-lg text-muted-foreground leading-relaxed max-w-2xl">
+              <p class="text-lg text-[#4a4a4a] leading-relaxed max-w-2xl">
                 {featuredPost.data.description}
               </p>
             </div>
 
-            <div class="border border-border/70 rounded-[24px] p-5 bg-background">
-              <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-accent mb-2">
-                Featured post
+            <div class="border border-border/70 rounded-[16px] p-5 bg-card">
+              <p class="font-mono text-xs text-accent lowercase mb-2">
+                start here
               </p>
-              <p class="text-sm text-muted-foreground leading-relaxed mb-5">
+              <p class="text-sm text-[#4a4a4a] leading-relaxed mb-5">
                 Start here if you want the clearest feel for the kind of writing this site is about.
               </p>
               <a
                 href={`/blog/${featuredPost.slug}`}
-                class="inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:text-accent transition-colors"
+                class="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline transition-colors"
               >
                 Read the featured essay
                 <span aria-hidden="true">→</span>
@@ -81,13 +71,13 @@ const latestPosts = remainingPosts.slice(0, 3);
     <section class="mb-24">
       <div class="flex items-center justify-between mb-8">
         <div>
-          <h2 class="text-2xl font-bold tracking-tight text-primary">Latest Writing</h2>
-          <p class="text-sm text-muted-foreground mt-2">
+          <h2 class="font-heading text-2xl font-bold tracking-tight text-foreground">Latest Writing</h2>
+          <p class="text-sm text-[#4a4a4a] mt-2">
             Specific stories about AI, memory, attention, and the systems underneath the feeling.
           </p>
         </div>
-        <a href="/blog" class="text-sm font-medium text-accent hover:underline">
-          View all
+        <a href="/blog" class="font-mono text-xs text-accent hover:underline lowercase">
+          view all &rarr;
         </a>
       </div>
       

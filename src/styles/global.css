@@ -1,17 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Space+Grotesk:wght@700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #f8f8f6;                /* Soft off-white background */
-  --foreground: #000000;                /* Pure black for high-contrast headings/bold text */
-  --muted-foreground: #71717a;         /* Muted gray for captions/quotes */
-  --prose-body: #4b5563;                 /* Muted gray (cool gray 600) for readable body text */
-  --accent: #2563eb;                     /* Sleek blue for links/actions */
-  --card-border: #e6e6e3;                /* Warm light gray for borders/dividers */
-  --code-bg: #f4f4f5;                    /* Off-white/light gray for code blocks */
+  --background: #ffffff;                /* Pure white zine background */
+  --foreground: #111111;                /* Deep black headings and bold */
+  --muted-foreground: #4a4a4a;         /* Subtitles & metadata */
+  --prose-body: #1a1a1a;                 /* Sharp zine body text */
+  --accent: #3b3bd1;                     /* Zine blue accent */
+  --accent-secondary: #3b3bd1;
+  --accent-background: #ffffff;
+  --tint: #ffe066;                      /* Highlighter yellow */
+  --card-border: #e6e6e3;
+  --code-bg: #f5f5f5;
   --border: #e6e6e3;
   --card: #ffffff;
-  --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 @theme {
@@ -20,27 +25,37 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-primary: var(--foreground);
   --color-accent: var(--accent);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-background: var(--accent-background);
   --color-border: var(--border);
   --color-card: var(--card);
   --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
 }
 
 body {
   background-color: var(--background);
   color: var(--prose-body);
   font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
 }
 
-/* --- Prose Styling matching the clean UI spec --- */
+/* --- Prose Styling matching zine spec --- */
+
+.prose {
+  max-width: 68ch;
+  margin-inline: auto;
+}
 
 .prose h1, .prose h2, .prose h3, .prose h4 {
+  font-family: var(--font-heading);
   color: var(--foreground);
   font-weight: 700;
   line-height: 1.25;
-  letter-spacing: -0.025em; /* Tight letter spacing for clean, premium-looking headings */
+  letter-spacing: -0.02em;
 }
 
 .prose h1 {
@@ -61,30 +76,41 @@ body {
 }
 
 .prose p {
-  margin-bottom: 1.75em; /* Comfortable paragraph spacing */
+  margin-bottom: 1.25em; /* Comfortable paragraph spacing */
   color: var(--prose-body);
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.7;
 }
 
 .prose strong, .prose b {
-  color: var(--foreground); /* Bold elements pop out in full black */
+  color: var(--foreground);
   font-weight: 700;
+}
+
+/* Zine Highlighter: #ffe066 behind first bold sentence of each post */
+.prose > p:first-of-type strong,
+.prose > p:first-of-type b {
+  background-color: #ffe066;
+  padding: 2px 5px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  border-radius: 2px;
+  color: #111111;
 }
 
 /* --- Code Styling --- */
 .prose code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.85em;
   background-color: var(--code-bg);
   color: var(--foreground);
   padding: 0.2em 0.4em;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 .prose pre {
   padding: 1.5em;
-  border-radius: 12px;
+  border-radius: 8px;
   background-color: var(--code-bg);
   border: 1px solid var(--card-border);
   overflow-x: auto;
@@ -101,10 +127,10 @@ body {
 
 /* --- Quotes & Links --- */
 .prose blockquote {
-  border-left: 4px solid var(--card-border);
-  padding: 0.5em 0 0.5em 1.5em;
+  border-left: 3px solid var(--foreground);
+  padding: 0.75em 1.25em;
   margin: 1.5em 0;
-  font-style: italic;
+  background-color: #fafafa;
 }
 
 .prose blockquote p {
@@ -114,12 +140,14 @@ body {
 
 .prose a {
   color: var(--accent);
-  text-decoration: none;
-  transition: color 0.2s ease;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  transition: opacity 0.15s ease;
 }
 
 .prose a:hover {
-  color: var(--foreground);
+  opacity: 0.8;
 }
 
 .prose hr {
@@ -131,11 +159,36 @@ body {
 .prose ul {
   list-style-type: disc;
   padding-left: 1.25rem;
-  margin-bottom: 1.75em;
+  margin-bottom: 1.25em;
 }
 
 .prose li {
   margin-bottom: 0.5rem;
   color: var(--prose-body);
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.7;
 }
+
+/* --- Image & Media Styling --- */
+.prose img {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  margin: 2rem 0;
+  display: block;
+}
+
+.prose figure {
+  margin: 2.5rem 0;
+}
+
+.prose figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  text-align: center;
+  font-style: italic;
+}
+

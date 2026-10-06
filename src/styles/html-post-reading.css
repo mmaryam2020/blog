@@ -1,0 +1,216 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Space+Grotesk:wght@700&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --card-bg: #ffffff;
+  --card-border: #e6e6e3;
+  --card-border-subtle: #f0f0ee;
+  --text-main: #111111;
+  --text-body: #1a1a1a;
+  --text-muted: #4a4a4a;
+  --text-light: #767676;
+  --primary: #3b3bd1;
+  --primary-bg: #ffffff;
+  --accent: #3b3bd1;
+  --highlighter: #ffe066;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+html, body {
+  background-color: #ffffff !important;
+  color: #1a1a1a !important;
+  font-family: var(--font-sans) !important;
+  font-size: 17px !important;
+  line-height: 1.7 !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Headings: Space Grotesk 700 */
+h1, h2, h3, h4, .post-title, .step-title {
+  font-family: var(--font-heading) !important;
+  font-weight: 700 !important;
+  color: #111111 !important;
+  letter-spacing: -0.02em !important;
+}
+
+p {
+  color: #1a1a1a !important;
+  font-family: var(--font-sans) !important;
+  font-size: 17px !important;
+  line-height: 1.7 !important;
+  margin-bottom: 1.25em !important;
+}
+
+li {
+  color: #1a1a1a !important;
+  font-family: var(--font-sans) !important;
+  font-size: 17px !important;
+  line-height: 1.7 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+strong, b, .post-header strong {
+  color: #111111 !important;
+  font-weight: 700 !important;
+}
+
+/* Subtitle: #4a4a4a, non-italic */
+.post-subtitle {
+  font-style: normal !important;
+  color: #4a4a4a !important;
+  font-size: 17.5px !important;
+  line-height: 1.6 !important;
+  margin-bottom: 24px !important;
+}
+
+/* Links: #3b3bd1, underline 2px */
+a {
+  color: #3b3bd1 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 3px !important;
+  transition: opacity 0.15s ease;
+}
+
+a:hover {
+  opacity: 0.8 !important;
+}
+
+/* Highlighter #ffe066 behind the first bold sentence of the post */
+main > p:first-of-type strong,
+main > p:first-of-type b,
+.container > main > p:first-of-type strong,
+.container > p:first-of-type strong,
+p:first-of-type strong {
+  background-color: #ffe066 !important;
+  padding: 2px 6px !important;
+  box-decoration-break: clone !important;
+  -webkit-box-decoration-break: clone !important;
+  border-radius: 2px !important;
+  color: #111111 !important;
+}
+
+/* Remove emoji category badge and top hashtag pills */
+.category-badge,
+.header-top .category-badge,
+.post-header .tags-row,
+.tags-row,
+.tag-pill {
+  display: none !important;
+}
+
+/* Meta line above title, mono, lowercase: "agentic diaries / Sep 9, 2026 / 6 min read" */
+.header-top, .header-meta {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-family: var(--font-mono) !important;
+  font-size: 13px !important;
+  color: #3b3bd1 !important;
+  text-transform: lowercase !important;
+  margin-bottom: 16px !important;
+  letter-spacing: 0 !important;
+}
+
+.header-top .header-date,
+.header-top .header-readtime {
+  font-family: var(--font-mono) !important;
+  color: #3b3bd1 !important;
+  font-size: 13px !important;
+  text-transform: lowercase !important;
+}
+
+.header-dot {
+  display: inline-block !important;
+  font-size: 0 !important;
+  width: auto !important;
+}
+
+.header-dot::after {
+  content: "/";
+  font-size: 13px;
+  color: #3b3bd1;
+  font-family: var(--font-mono);
+  margin: 0 4px;
+}
+
+/* Step number circles: #111111 with white numbers */
+.step-num {
+  background: #111111 !important;
+  color: #ffffff !important;
+  font-family: var(--font-heading) !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  border-radius: 50% !important;
+}
+
+.step-item {
+  background: #ffffff !important;
+  border-color: #e6e6e3 !important;
+}
+
+.step-desc {
+  color: #1a1a1a !important;
+}
+
+/* Tags at end of post, plain mono text */
+.footer-tags {
+  display: block !important;
+  font-family: var(--font-mono) !important;
+  font-size: 13px !important;
+  color: #4a4a4a !important;
+  text-transform: lowercase !important;
+  margin-top: 36px !important;
+  padding-top: 18px !important;
+  border-top: 1px solid #e6e6e3 !important;
+}
+
+/* Tables, code, and callouts */
+code {
+  font-family: var(--font-mono) !important;
+  background-color: #f5f5f5 !important;
+  color: #111111 !important;
+}
+
+pre {
+  background: #111111 !important;
+  color: #ffffff !important;
+  border-radius: 6px !important;
+}
+
+.callout {
+  background: #fbfbfb !important;
+  border-color: #e6e6e3 !important;
+  border-left: 3px solid #111111 !important;
+  color: #1a1a1a !important;
+}
+
+.callout-highlight {
+  border-left-color: #3b3bd1 !important;
+}
+
+.table-wrap {
+  background: #ffffff !important;
+  border-color: #e6e6e3 !important;
+}
+
+th {
+  background: #f8f8f8 !important;
+  color: #4a4a4a !important;
+  font-family: var(--font-mono) !important;
+  border-bottom-color: #e6e6e3 !important;
+}
+
+td {
+  border-bottom-color: #f0f0ee !important;
+  color: #1a1a1a !important;
+}
+
+.footer-note {
+  border-top-color: #e6e6e3 !important;
+  color: #4a4a4a !important;
+  font-family: var(--font-mono) !important;
+  font-size: 13px !important;
+}
