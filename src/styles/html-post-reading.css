@@ -148,6 +148,13 @@ a:has(img) {
   color: #1a1a1a !important;
 }
 
+/* No trailing gap at the bottom of cards and callouts */
+.step-desc,
+.step-content p:last-child,
+.callout p:last-child {
+  margin-bottom: 0 !important;
+}
+
 /* Tags at end of post, plain mono text */
 .footer-tags {
   display: block !important;
