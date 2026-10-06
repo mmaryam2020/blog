@@ -37,14 +37,14 @@ This blog is my lab notebook: what I shipped, what broke, and what I learned fiv
 
 ## Speaking
 
-- **AI Tinkerers Toronto, CLAWFEST with NVIDIA** (May 2026): *Moka: Filesystem Agent OS*
+- [**AI Tinkerers Toronto, CLAWFEST with NVIDIA** (May 2026)](https://toronto.aitinkerers.org/p/ai-tinkerers-toronto-clawfest-with-nvidia-may-2026): *Moka: Filesystem Agent OS*
 
 ## Teaching & Mentorship
 
 I love translating sharp technical work into language that makes people feel smarter, not smaller:
 
 - **Google for Startups Accelerator**: helping founders tell real agent value from expensive theater.
-- **ADPList**: 1,200+ minutes mentoring engineers, PMs, and architects. Long enough that I catch myself repeating my own advice.
+- [**ADPList**](https://adplist.org/community-certifications/top50-dec-2024-ai-ml-engineering-52c5f5): 1,200+ minutes mentoring engineers, PMs, and architects. Long enough that I catch myself repeating my own advice.
 - **Kaggle Fellowship**: guided data scientists building GenAI apps with Gemma.
 
 ## Outside The Repo
