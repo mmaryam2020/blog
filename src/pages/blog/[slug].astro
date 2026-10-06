@@ -141,5 +141,124 @@ const iframeBody = post.isHtml
     )}
 
   </main>
+
+  <!-- Fullscreen Lightbox Modal -->
+  <div
+    id="image-lightbox"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/85 backdrop-blur-sm p-4 md:p-8 transition-opacity duration-200"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Image Zoom Preview"
+  >
+    <!-- Top Bar Controls -->
+    <div class="absolute top-4 right-4 md:top-6 md:right-8 flex items-center gap-3 z-10">
+      <a
+        id="lightbox-external"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-mono tracking-wide transition-colors"
+        title="Open original file in new tab"
+      >
+        Open file ↗
+      </a>
+      <button
+        id="lightbox-close"
+        type="button"
+        class="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer text-lg font-bold"
+        aria-label="Close image"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Centered Image -->
+    <div class="relative max-w-5xl max-h-[90vh] flex items-center justify-center">
+      <img
+        id="lightbox-img"
+        src=""
+        alt=""
+        class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl cursor-zoom-out"
+      />
+    </div>
+  </div>
+
+  <script>
+    const lightbox = document.getElementById('image-lightbox');
+    const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement | null;
+    const lightboxExternal = document.getElementById('lightbox-external') as HTMLAnchorElement | null;
+    const lightboxClose = document.getElementById('lightbox-close');
+
+    function openLightbox(src: string, alt: string = '') {
+      if (!lightbox || !lightboxImg) return;
+      lightboxImg.src = src;
+      lightboxImg.alt = alt;
+      if (lightboxExternal) lightboxExternal.href = src;
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      if (!lightbox || !lightboxImg) return;
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      lightboxImg.src = '';
+      document.body.style.overflow = '';
+    }
+
+    lightboxClose?.addEventListener('click', closeLightbox);
+    lightbox?.addEventListener('click', (e) => {
+      if (e.target === lightbox || e.target === lightboxImg) {
+        closeLightbox();
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !lightbox?.classList.contains('hidden')) {
+        closeLightbox();
+      }
+    });
+
+    // Listen for postMessage from iframes
+    window.addEventListener('message', (event) => {
+      if (event.data?.type === 'OPEN_IMAGE_LIGHTBOX' && event.data.src) {
+        openLightbox(event.data.src, event.data.alt || '');
+      }
+    });
+
+    // Support clicking prose images in MDX articles
+    document.querySelectorAll('article.prose img:not(.not-prose)').forEach((img) => {
+      const el = img as HTMLImageElement;
+      el.style.cursor = 'zoom-in';
+      el.addEventListener('click', () => {
+        openLightbox(el.src, el.alt);
+      });
+    });
+
+    // Attach to iframe elements once loaded
+    const iframe = document.querySelector('iframe');
+    if (iframe) {
+      const setupIframeImages = () => {
+        try {
+          const doc = iframe.contentWindow?.document;
+          if (!doc) return;
+          doc.querySelectorAll('.image-link, .image-wrapper, img.post-image').forEach((node) => {
+            node.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const img = node.querySelector('img') || (node.tagName === 'IMG' ? node : null) as HTMLImageElement | null;
+              const link = (node.tagName === 'A' ? node : node.closest('a')) as HTMLAnchorElement | null;
+              const src = link?.href || img?.src || '/images/stop-building-autonomous-agents.jpg';
+              openLightbox(src, img?.alt || '');
+            });
+          });
+        } catch (err) {}
+      };
+      iframe.addEventListener('load', setupIframeImages);
+      // Run once if already loaded
+      setTimeout(setupIframeImages, 500);
+    }
+  </script>
 </Layout>
 

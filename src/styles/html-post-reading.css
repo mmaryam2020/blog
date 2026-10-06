@@ -78,18 +78,11 @@ a:hover {
   opacity: 0.8 !important;
 }
 
-/* Highlighter #ffe066 behind the first bold sentence of the post */
-main > p:first-of-type strong,
-main > p:first-of-type b,
-.container > main > p:first-of-type strong,
-.container > p:first-of-type strong,
-p:first-of-type strong {
-  background-color: #ffe066 !important;
-  padding: 2px 6px !important;
-  box-decoration-break: clone !important;
-  -webkit-box-decoration-break: clone !important;
-  border-radius: 2px !important;
-  color: #111111 !important;
+.image-link,
+.image-link:hover,
+.image-link *,
+a:has(img) {
+  text-decoration: none !important;
 }
 
 /* Remove emoji category badge and top hashtag pills */
