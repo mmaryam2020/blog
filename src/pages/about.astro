@@ -16,74 +16,76 @@ const { Content } = await aboutEntry.render();
   <Navbar />
   <main class="flex-1 w-full max-w-4xl mx-auto px-6 py-20">
     <div class="bg-card border border-border/80 rounded-[24px] p-8 md:p-12 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-      <article class="prose max-w-none">
-        <div class="mb-8 pb-6 border-b border-border/60">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-card text-accent text-xs font-bold tracking-wider uppercase rounded-full border border-border mb-4">
-            About the Builder
-          </span>
-          <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-primary mb-3 leading-tight">
-                {name}
-              </h1>
-              <p class="text-base md:text-lg text-muted-foreground m-0">{role}</p>
+      <!-- Profile Header -->
+      <div class="mb-8 pb-6 border-b border-border/60">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-card text-accent text-xs font-bold tracking-wider uppercase rounded-full border border-border mb-4 font-mono">
+          About the Builder
+        </span>
+        <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-primary mb-3 leading-tight font-heading">
+              {name}
+            </h1>
+            <p class="text-base md:text-lg text-muted-foreground m-0">{role}</p>
+          </div>
+          {avatarImage ? (
+            <img
+              src={avatarImage}
+              alt={name}
+              class="not-prose h-20 w-20 min-w-20 min-h-20 max-w-[80px] max-h-[80px] rounded-full object-cover border border-border shadow-sm shrink-0"
+              style="width: 80px; height: 80px; max-width: 80px; max-height: 80px; border-radius: 9999px; object-fit: cover; margin: 0; display: block;"
+            />
+          ) : (
+            <div class="not-prose flex h-20 w-20 min-w-20 min-h-20 items-center justify-center rounded-full border border-border bg-background text-2xl font-bold text-primary shadow-sm shrink-0">
+              {avatarText}
             </div>
-            {avatarImage ? (
-              <img
-                src={avatarImage}
-                alt={name}
-                class="not-prose h-20 w-20 rounded-full object-cover border border-border shadow-sm"
-              />
-            ) : (
-              <div class="not-prose flex h-18 w-18 items-center justify-center rounded-full border border-border bg-background text-2xl font-bold text-primary shadow-sm">
-                {avatarText}
-              </div>
-            )}
-          </div>
-          <p class="mt-6 mb-0 text-lg md:text-xl leading-relaxed text-primary font-medium max-w-2xl">
-            Building thoughtful AI systems, writing honest field notes, and treating ambition like an endurance sport.
-          </p>
+          )}
         </div>
-        
+        <p class="mt-6 mb-0 text-lg md:text-xl leading-relaxed text-primary font-medium max-w-2xl">
+          Building thoughtful AI systems, writing honest field notes, and treating ambition like an endurance sport.
+        </p>
+      </div>
+      
+      <article class="prose max-w-none">
         <Content />
-        
-        {interests && interests.length > 0 && (
-          <div class="mt-12 pt-8 border-t border-border/60">
-            <h3 class="text-xl font-bold text-primary mb-4">Core Interests</h3>
-            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 list-none p-0">
-              {interests.map((interest: string) => (
-                <li class="relative pl-6 mb-2 before:content-['→'] before:absolute before:left-0 before:text-accent">
-                  {interest}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Social Links at bottom */}
-        <div class="flex items-center gap-4 pt-8 mt-12 border-t border-border/60 justify-center">
-          {github && (
-            <a href={github} target="_blank" class="p-2.5 rounded-full bg-background border border-border hover:border-foreground text-muted-foreground hover:text-foreground transition-all duration-200">
-              <Github className="w-5 h-5" />
-            </a>
-          )}
-          {twitter && (
-            <a href={twitter} target="_blank" class="p-2.5 rounded-full bg-background border border-border hover:border-foreground text-muted-foreground hover:text-foreground transition-all duration-200">
-              <Twitter className="w-5 h-5" />
-            </a>
-          )}
-          {linkedin && (
-            <a href={linkedin} target="_blank" class="p-2.5 rounded-full bg-background border border-border hover:border-foreground text-muted-foreground hover:text-foreground transition-all duration-200">
-              <Linkedin className="w-5 h-5" />
-            </a>
-          )}
-          {email && (
-            <a href={`mailto:${email}`} class="p-2.5 rounded-full bg-background border border-border hover:border-foreground text-muted-foreground hover:text-foreground transition-all duration-200">
-              <Mail className="w-5 h-5" />
-            </a>
-          )}
-        </div>
       </article>
+      
+      {interests && interests.length > 0 && (
+        <div class="mt-12 pt-8 border-t border-border/60">
+          <h3 class="text-xl font-bold text-primary mb-4 font-heading">Core Interests</h3>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 list-none p-0">
+            {interests.map((interest: string) => (
+              <li class="relative pl-6 mb-2 before:content-['→'] before:absolute before:left-0 before:text-accent text-[var(--prose-body)]">
+                {interest}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Social Links at bottom */}
+      <div class="flex items-center gap-4 pt-8 mt-12 border-t border-border/60 justify-center">
+        {github && (
+          <a href={github} target="_blank" class="p-2.5 rounded-full bg-background border border-border hover:border-foreground text-muted-foreground hover:text-foreground transition-all duration-200" aria-label="GitHub">
+            <Github className="w-5 h-5" />
+          </a>
+        )}
+        {twitter && (
+          <a href={twitter} target="_blank" class="p-2.5 rounded-full bg-background border border-border hover:border-foreground text-muted-foreground hover:text-foreground transition-all duration-200" aria-label="Twitter">
+            <Twitter className="w-5 h-5" />
+          </a>
+        )}
+        {linkedin && (
+          <a href={linkedin} target="_blank" class="p-2.5 rounded-full bg-background border border-border hover:border-foreground text-muted-foreground hover:text-foreground transition-all duration-200" aria-label="LinkedIn">
+            <Linkedin className="w-5 h-5" />
+          </a>
+        )}
+        {email && (
+          <a href={`mailto:${email}`} class="p-2.5 rounded-full bg-background border border-border hover:border-foreground text-muted-foreground hover:text-foreground transition-all duration-200" aria-label="Email">
+            <Mail className="w-5 h-5" />
+          </a>
+        )}
+      </div>
     </div>
   </main>
 </Layout>
