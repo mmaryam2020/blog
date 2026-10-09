@@ -13,6 +13,7 @@ export interface UnifiedPost {
     tags: string[];
     category?: string;
     featured?: boolean;
+    image?: string;
   };
   _originalEntry?: any;
 }
@@ -31,6 +32,7 @@ export async function getUnifiedPosts(): Promise<UnifiedPost[]> {
       tags: post.data.tags || [],
       category: post.data.category,
       featured: post.data.featured,
+      image: post.data.image,
     },
     _originalEntry: post,
   }));
@@ -55,6 +57,7 @@ export async function getUnifiedPosts(): Promise<UnifiedPost[]> {
         let tags: string[] = [];
         let category: string | undefined = undefined;
         let featured = false;
+        let image: string | undefined = undefined;
         let htmlToParse = fileContent;
         
         const frontmatterMatch = fileContent.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
@@ -85,6 +88,7 @@ export async function getUnifiedPosts(): Promise<UnifiedPost[]> {
                 else if (key === 'date') date = new Date(val);
                 else if (key === 'category') category = val;
                 else if (key === 'featured') featured = val.toLowerCase() === 'true';
+                else if (key === 'image') image = val;
                 else if (key === 'tags') {
                   if (val.startsWith('[') && val.endsWith(']')) {
                     tags = val.slice(1, -1).split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
@@ -108,6 +112,13 @@ export async function getUnifiedPosts(): Promise<UnifiedPost[]> {
             if (description.length > 160) {
               description = description.slice(0, 157) + '...';
             }
+          }
+        }
+
+        if (!image) {
+          const imgTagMatch = htmlToParse.match(/<img[^>]+src=["']([^"']+)["']/i);
+          if (imgTagMatch && imgTagMatch[1]) {
+            image = imgTagMatch[1];
           }
         }
         
@@ -138,6 +149,7 @@ export async function getUnifiedPosts(): Promise<UnifiedPost[]> {
             tags,
             category,
             featured,
+            image,
           },
         });
       }

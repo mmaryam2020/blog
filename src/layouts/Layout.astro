@@ -10,11 +10,20 @@ interface Props {
 const {
   title,
   description = "Notes from building AI systems, thinking through messy ideas, and figuring things out in public.",
-  image = '/social-preview.svg',
+  image = '/social-preview.png',
 } = Astro.props;
 
+// Ensure we don't serve .svg to social platforms like LinkedIn
+const rasterImage = image.endsWith('.svg') ? image.replace(/\.svg$/, '.png') : image;
+
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
-const socialImageUrl = new URL(image, Astro.site ?? Astro.url.origin).toString();
+const socialImageUrl = new URL(rasterImage, Astro.site ?? Astro.url.origin).toString();
+const isArticle = Astro.url.pathname.startsWith('/blog/') && Astro.url.pathname !== '/blog/';
+const imageType = socialImageUrl.endsWith('.png')
+  ? 'image/png'
+  : socialImageUrl.endsWith('.jpg') || socialImageUrl.endsWith('.jpeg')
+  ? 'image/jpeg'
+  : undefined;
 ---
 <!doctype html>
 <html lang="en" class="h-full">
@@ -26,10 +35,12 @@ const socialImageUrl = new URL(image, Astro.site ?? Astro.url.origin).toString()
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={isArticle ? 'article' : 'website'} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content="Agentic Diaries" />
     <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:secure_url" content={socialImageUrl} />
+    {imageType && <meta property="og:image:type" content={imageType} />}
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
     <meta name="twitter:card" content="summary_large_image" />
