@@ -1,0 +1,145 @@
+---
+title: "Accuracy isn't a number"
+description: "Without rubrics and review gates, generative AI wanders forever. How teams and SMEs define what good looks like and how to check it."
+date: "2026-10-25"
+tags: ["ai evaluation"]
+category: "episodes"
+featured: false
+image: "/images/operationalizing-the-infinite.jpg"
+---
+
+One SME rates an AI answer 9/10. Another SME on the same team rates the same answer 5/10.
+
+The model didn't change. The rubric was never clear.
+
+> When AI can produce an endless stream of outputs, "accuracy" stops being a number. It becomes a negotiation. If business teams and SMEs don't define where we're going and how we check, the project wanders forever.
+
+![Infinite outputs aren't progress. You need a rubric and gates.](/images/operationalizing-the-infinite.jpg)
+
+---
+
+## The problem: endless output, no definition of done
+
+Teams rarely lack output. Today's models can produce text, code, summaries, analyses and workflows almost without limit.
+
+That creates a paradox:
+
+- **Too much to check.** AI produces answers faster than people can read or verify them.
+- **AI is messy.** Outputs are probabilistic. An answer can be slightly wrong, convincingly wrong, or risky to act on.
+- **No destination.** In traditional software, success is clear: status 200, tests pass, schema matches. With generative AI we can build almost anything. But if we go infinite and don't know the destination, we will never arrive there.
+
+> The bottleneck isn't what AI can do anymore. It's calibration. Helping business leaders and SMEs agree on the right metrics and how to measure them is what decides whether something is ready for production.
+
+---
+
+## When "accuracy" is an opinion
+
+Engineers ask business teams: *"What accuracy do you need?"* The answer is usually: *"95% or higher."*
+
+For generative tasks, that question is broken from the start.
+
+### 1. There is no single right answer
+
+In real work (legal clauses, underwriting summaries, medical notes, architecture reviews), **two senior SMEs on the same team will often disagree on whether an AI output is "good."**
+
+- SME A wants it short and following internal conventions.
+- SME B wants full context and every edge case.
+- If A gives it 9/10 and B gives it 5/10, the problem isn't the model. It's an unclear rubric.
+
+### 2. Automating a standard nobody agreed on
+
+If SMEs haven't settled their own standards:
+
+- **Self-evaluation fails.** Asking an LLM to grade its own "accuracy" just stacks its blind spots on top of its mistakes.
+- **The AI judge drifts.** An LLM judge enforces whatever bias is hidden in its prompt, not what the business needs.
+- **Endless prompt tweaking.** Developers spend weeks rewriting prompts to please one SME, then break it for another SME the next week.
+
+| What people say | What a clear rubric says |
+| --- | --- |
+| "It's too long." | "Fail: the answer isn't in the first two lines." |
+| "It doesn't feel accurate." | "Fail: one number doesn't match the source document." |
+| "Something's missing." | "Fail: it doesn't say what the reader should do next." |
+
+---
+
+## Metrics vs. methods: what we measure vs. how we measure it
+
+Teams mix up **metrics** (what good looks like) with **methods** (how we check and combine the results). You need both.
+
+### 1. Metrics (the what)
+
+- **Grounded:** Can every claim be traced back to the source or our own data?
+- **Relevant and complete:** Did it answer the actual question, without fluff or missing steps?
+- **Usable:** Can someone act on it right away, or do they have to reformat it?
+- **Safe and within policy:** Did it respect confidentiality, compliance and domain rules?
+
+### 2. Methods (the how)
+
+I think of it as three gates. Each one costs more than the one before, so you only pay for the expensive one when you have to.
+
+1. **Code checks.** Does it match the schema? Does it break a rule? Does it use a word it should never use? If it fails, retry or fall back. No judgment needed.
+2. **An LLM judge with a rubric.** It checks what code can't: is it grounded, is it relevant, are the citations real? A clear pass gets delivered.
+3. **An SME.** Anything the judge is unsure about, or anything people disagree on, goes to a person. When they correct something, that example goes into the golden set, so every future version gets tested against it.
+
+#### Why you can't just average scores
+
+It's tempting to score each metric and take the average. `(accuracy + relevance) / 2` looks neat on a dashboard.
+
+But an answer that is 99% relevant with one made-up date or one wrong price isn't 99% good. **It's 0% usable.**
+
+> Use thresholds, not averages. If grounding fails, nothing else saves it.
+
+---
+
+## Start before everything is set
+
+A common trap is waiting for the perfect spec before starting. With generative AI, you can't know all the ways it will fail up front.
+
+So the evaluation grows in four phases:
+
+### Phase 1: SME calibration workshop (first 2 weeks)
+
+- Bring together 3–5 SMEs and product owners.
+- Collect 50 real, tricky inputs.
+- Run them through the prototype and have SMEs grade them separately, without seeing each other's grades.
+- Meet to talk through the disagreements: *"Why did A call this unacceptable while B loved it?"*
+- Turn those debates into a first version of a **living rubric**.
+
+### Phase 2: Simple checks in code
+
+Before judging meaning, add fast, cheap checks:
+
+- Does the output match the expected JSON schema?
+- Does it cite document IDs that exist?
+- Is it within latency and token limits?
+- Does it avoid the things it must never say?
+
+### Phase 3: The golden set
+
+- Turn the examples SMEs agreed on into a permanent test set.
+- Run it on every prompt change, model upgrade or tool change, so you catch regressions before users do.
+
+### Phase 4: Learn from production
+
+- Track **edit distance**: how much do people change the AI output before using it? A lot of editing means your metrics are off.
+- Meet with SMEs every two weeks to review new edge cases and update the rubric.
+
+---
+
+## The open-loop trap
+
+1. **Output explosion:** AI produces lots of answers that sound right.
+2. **Fog:** Without a clear rubric, SMEs give conflicting, anecdotal feedback.
+3. **Patching:** Developers tweak the prompt for the loudest complaint and quietly break something else.
+4. **Trust drops:** Stakeholders decide the AI is "unpredictable."
+5. **Closing the loop:** A clear rubric and review gates turn that chaos into something you can measure and improve.
+
+---
+
+Don't ask your team *"Can AI do this?"* Ask them:
+
+> *"What's our rubric, how do our SMEs settle disagreements, and how will we know when the AI is off track?"*
+
+**Part 2: how much human review do we actually need?**
+
+**Sources:** Shankar et al., [Who Validates the Validators?](https://arxiv.org/abs/2404.12272) · Hamel Husain, [Creating an LLM-as-a-Judge That Drives Business Results](https://hamel.dev/blog/posts/llm-judge/)
