@@ -94,7 +94,7 @@ a:has(img) {
   display: none !important;
 }
 
-/* Meta line above title, mono, lowercase: "agentic diaries / Sep 9, 2026 / 6 min read" */
+/* Meta line above title, mono, lowercase: "agentic diaries / Sep 9, 2026" */
 .header-top, .header-meta {
   display: flex !important;
   align-items: center !important;

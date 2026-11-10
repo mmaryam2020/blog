@@ -8,12 +8,6 @@ import { isEducationPost } from '../../lib/utils';
 const allPosts = await getUnifiedPosts();
 const sortedPosts = allPosts.filter(post => isEducationPost(post.data.category));
 
-// Helper to calculate reading time
-const getReadingTime = (body: string) => {
-  const wordsPerMinute = 200;
-  const words = body.trim().split(/\s+/).length;
-  return Math.ceil(words / wordsPerMinute).toString();
-};
 ---
 <Layout title="Learn | Agentic Diaries">
   <Navbar />
@@ -41,7 +35,6 @@ const getReadingTime = (body: string) => {
             title={post.data.title}
             description={post.data.description}
             date={post.data.date}
-            readingTime={getReadingTime(post.body)}
             tags={post.data.tags}
             category={post.data.category}
             href={`/blog/${post.slug}`}

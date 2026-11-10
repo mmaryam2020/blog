@@ -22,11 +22,6 @@ if (!post.isHtml && post._originalEntry) {
   Content = rendered.Content;
 }
 
-const getReadingTime = (body: string) => {
-  const wordsPerMinute = 200;
-  const words = body.trim().split(/\s+/).length;
-  return Math.ceil(words / wordsPerMinute).toString();
-};
 const isFullHtml = post.isHtml && (post.body.includes('<h1') || post.body.includes('<H1'));
 const metaPrefix = isEducationPost(post.data.category)
   ? `${metaLabel(post.data.category)} / curated from x`
@@ -34,24 +29,8 @@ const metaPrefix = isEducationPost(post.data.category)
 
 let htmlBody = post.body;
 if (post.isHtml) {
-  let readTime = "5";
-  if (post.slug.toLowerCase().includes('workout')) {
-    readTime = "6";
-  } else {
-    try {
-      const clean = post.body
-        .replace(/<style[\s\S]*?<\/style>/gi, '')
-        .replace(/<script[\s\S]*?<\/script>/gi, '')
-        .replace(/<[^>]+>/g, ' ');
-      const words = clean.trim().split(/\s+/).filter(Boolean).length;
-      readTime = Math.max(1, Math.ceil(words / 200)).toString();
-    } catch {
-      readTime = "5";
-    }
-  }
-
   const dateStr = format(post.data.date, "MMM d, yyyy");
-  const metaLine = `${metaPrefix} / ${dateStr} / ${readTime} min read`;
+  const metaLine = `${metaPrefix} / ${dateStr}`;
 
   // Standardize header meta line and strip top category/tags from all HTML posts
   htmlBody = htmlBody.replace(/<div class="header-top">[\s\S]*?<\/div>/i, `<div class="header-top">${metaLine}</div>`);
@@ -145,7 +124,7 @@ if (!postImage) {
         <article class="prose">
           <div class="mb-8 pb-6 border-b border-border/60">
             <div class="font-mono text-xs md:text-sm text-[#3b3bd1] lowercase mb-4 tracking-normal">
-              {metaPrefix} / {format(post.data.date, "MMM d, yyyy")} / {getReadingTime(post.body)} min read
+              {metaPrefix} / {format(post.data.date, "MMM d, yyyy")}
             </div>
             <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-primary mb-4 leading-tight font-heading">
               {post.data.title}
