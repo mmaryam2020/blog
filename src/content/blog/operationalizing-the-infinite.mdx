@@ -1,0 +1,87 @@
+---
+title: "How much human review do we actually need?"
+description: "Once your rubric exists, how much expert time do you actually need? Why random sampling wastes hours, and how to sample for high-signal review."
+date: "2026-11-09"
+tags: ["ai evaluation"]
+category: "episodes"
+featured: false
+image: "/images/calibrating-human-review-panel-by-panel.jpg"
+---
+
+In [Part 1](/blog/accuracy-isnt-a-number), we covered how accuracy stays a negotiation until you nail down a clear rubric. The next hurdle is practical: once that rubric exists, how much expert time do you actually need, and how do you turn their feedback into reusable signal instead of personal opinion?
+
+Most teams either bury their experts in endless review queues, or they ask questions the wrong way and get conflicting answers. The fix is not checking a flat percentage of every output. It is running a simple workflow that builds a living standard, then shifting your expert to inspect only the runs that matter.
+
+> Treat expert time like gold. The bottleneck isn't getting feedback; it's extracting reusable rules from people's heads and spending human attention only where the model is confused.
+
+![Calibrating Human Review, Panel by Panel](/images/calibrating-human-review-panel-by-panel.jpg)
+
+---
+
+## 1. Start independent, then calibrate
+
+Bring three to five domain experts and product owners together. Hand them 50 tricky inputs from your prototype. Have them grade the outputs separately without seeing anyone else's marks.
+
+Then meet, but only talk about the disagreements:
+
+- **Why did one person fail an answer that someone else loved?**
+- **What unwritten rules or assumptions were in their heads?**
+
+Grading real examples is what helps people articulate their rules in the first place. Keeping that first pass independent prevents the loudest person in the room from biasing everyone else, keeping the initial signal clean. Those debates pull unwritten rules out of people's heads and turn them into version one of your rubric.
+
+---
+
+## 2. Give daily ownership to one principal expert
+
+Committees are great for discovering unwritten rules, but terrible for maintaining them.
+
+After the initial workshop, pick one lead expert to own the rubric and break ties. If you rotate reviewers every day, you just recreate the inconsistency you were trying to fix.
+
+Keep the wider team on standby for high-stakes edge cases or policy pivots, but daily consistency needs a single owner.
+
+---
+
+## 3. Sample for signal, not volume
+
+Random sampling wastes valuable hours on obvious passes. Once your expert helps build an initial ground truth set of around 100 labeled runs with clear reasoning, their role changes. They stop scoring every run and become an auditor.
+
+Route only the runs that actually teach the system something:
+
+1. **Disagreements:** when two automated judges clash, or when a judge contradicts a deterministic code check.
+2. **High-risk edge cases:** safety triggers, policy boundaries, and compliance alerts.
+3. **New failure patterns:** recent production bugs and customer escalations.
+
+A sustainable target is about ten of each — roughly **30 cases a week**. That is light enough for a busy specialist to actually finish, yet dense enough to catch real drift.
+
+---
+
+## 4. Make feedback concrete
+
+When an output fails, do not accept vague notes like *"this feels off."* That cannot be turned into an automated check.
+
+Require a simple three-part format:
+
+1. **Which criterion failed:** Name the exact rubric rule (for example, *"Grounding check failed"*).
+2. **One sentence explaining why:** Point directly to the source mismatch (*"The output quotes a policy discount that doesn't exist in the source document"*).
+3. **What the output should have done instead:** Provide the concrete ground truth (*"State that no discount applies to this tier"*).
+
+Log these directly into your eval tracker so they become instant anchor examples. Use a quick 30-minute live session to kick things off or unblock tricky edge cases, but keep regular reviews async so you do not bottleneck on calendars.
+
+---
+
+## Closing the loop
+
+The goal matches Part 1: turn a fuzzy debate into something you can measure and improve. Spend expert time early to define the bar, then use it sparingly to keep the system honest.
+
+> Stop asking your domain experts to grade everything. Build the living rubric together, give one person the keys, and route only the friction points.
+
+← [**Part 1: Accuracy isn't a number**](/blog/accuracy-isnt-a-number)
+
+---
+
+**Sources:**
+- Shankar et al., [Who Validates the Validators? Aligning LLM-Assisted Evaluation with Human Preferences](https://arxiv.org/abs/2404.12272)
+- Hamel Husain, [Using LLM-as-a-Judge For Evaluation: A Complete Guide](https://hamel.dev/blog/posts/llm-judge/)
+- Pratik Bhavsar, [What Is SME-in-the-Loop in AI Evals?](https://www.splunk.com/en_us/blog/ai/sme-in-the-loop-ai-evals.html)
+- Taylor McNally & Adam Weinberger, [Integrating SMEs into Generative AI Evaluation](https://aws.amazon.com/blogs/publicsector/integrating-subject-matter-experts-into-generative-ai-evaluation-with-the-aws-generative-ai-innovation-center/)
+- Nikita Agarwal, [Human Review for Agent Evals](https://befailproof.ai)
