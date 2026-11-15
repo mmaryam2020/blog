@@ -11,8 +11,42 @@ if (!aboutEntry) {
 
 const { title, name, role, avatarText, avatarImage, github, twitter, linkedin, email, interests } = aboutEntry.data;
 const { Content } = await aboutEntry.render();
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
+const avatarUrl = avatarImage ? new URL(avatarImage, Astro.site ?? Astro.url.origin).toString() : undefined;
+
+const sameAsLinks = [
+  linkedin,
+  twitter,
+  github,
+  "https://toronto.aitinkerers.org/p/ai-tinkerers-toronto-clawfest-with-nvidia-may-2026",
+  "https://adplist.org/community-certifications/top50-dec-2024-ai-ml-engineering-52c5f5",
+].filter(Boolean);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "mainEntity": {
+    "@type": "Person",
+    "name": name,
+    "jobTitle": role,
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Google",
+    },
+    "url": pageUrl,
+    ...(avatarUrl ? { "image": avatarUrl } : {}),
+    "sameAs": sameAsLinks,
+    "knowsAbout": interests,
+  },
+};
 ---
-<Layout title="About | Agentic Building Diaries">
+<Layout
+  title={`About ${name} | Agentic Diaries`}
+  description="Maryam Moadeli is an AI Systems Architect & Tech Lead building production agent systems, visual engineering guides, and memory architectures."
+  image={avatarImage}
+  jsonLd={jsonLd}
+>
   <Navbar />
   <main class="flex-1 w-full max-w-4xl mx-auto px-6 py-20">
     <div class="bg-card border border-border/80 rounded-[24px] p-8 md:p-12 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">

@@ -9,7 +9,10 @@ const allPosts = await getUnifiedPosts();
 const sortedPosts = allPosts.filter(post => isEducationPost(post.data.category));
 
 ---
-<Layout title="Learn | Agentic Diaries">
+<Layout
+  title="Learn: AI Guides & Visual Explainers | Agentic Diaries"
+  description="Interactive visual guides, digests, and tutorials on AI engineering and agent architectures, with Ollie and companion guides."
+>
   <Navbar />
   <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-20">
     <div class="mb-16">

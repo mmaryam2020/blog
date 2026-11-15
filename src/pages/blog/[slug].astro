@@ -75,11 +75,57 @@ if (!postImage) {
     postImage = imgMatch[1];
   }
 }
+
+const postUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
+const postImageUrl = postImage ? new URL(postImage, Astro.site ?? Astro.url.origin).toString() : undefined;
+
+const articleData = {
+  publishedTime: post.data.date,
+  modifiedTime: post.data.date,
+  author: "Maryam Moadeli",
+  tags: post.data.tags || [],
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": postUrl,
+  },
+  "headline": post.data.title,
+  "description": post.data.description,
+  ...(postImageUrl ? { "image": [postImageUrl] } : {}),
+  "datePublished": post.data.date.toISOString(),
+  "dateModified": post.data.date.toISOString(),
+  "author": {
+    "@type": "Person",
+    "name": "Maryam Moadeli",
+    "url": new URL('/about', Astro.site ?? Astro.url.origin).toString(),
+    "sameAs": [
+      "https://www.linkedin.com/in/maryammo/",
+      "https://x.com/MaryamMoad",
+      "https://github.com/mmaryam2020",
+    ],
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Agentic Diaries",
+    "url": (Astro.site ?? Astro.url.origin).toString(),
+    "logo": {
+      "@type": "ImageObject",
+      "url": new URL('/favicon.svg', Astro.site ?? Astro.url.origin).toString(),
+    },
+  },
+  ...(post.data.tags?.length ? { "keywords": post.data.tags.join(', ') } : {}),
+};
 ---
 <Layout
-  title={`${post.data.title} | Agentic Building Diaries`}
+  title={`${post.data.title} | Agentic Diaries`}
   description={post.data.description}
   image={postImage}
+  articleData={articleData}
+  jsonLd={jsonLd}
 >
   <Navbar />
   <main class={`flex-1 w-full mx-auto px-4 md:px-6 py-12 md:py-16 ${isFullHtml ? "max-w-6xl" : "max-w-3xl"}`}>
@@ -88,8 +134,14 @@ if (!postImage) {
     </a>
     
     {isFullHtml ? (
-      <iframe
-        srcdoc={iframeBody}
+      <>
+        <header class="sr-only">
+          <h1>{post.data.title}</h1>
+          <p>{post.data.description}</p>
+          <time datetime={post.data.date.toISOString()}>{format(post.data.date, "yyyy-MM-dd")}</time>
+        </header>
+        <iframe
+          srcdoc={iframeBody}
         scrolling="no"
         class="w-full border-none overflow-hidden"
         style="min-height: 800px; transition: height 0.25s ease;"
@@ -119,6 +171,7 @@ if (!postImage) {
           }
         "
       />
+      </>
     ) : (
       <div class="bg-card border border-border/80 rounded-[16px] p-8 md:p-12 shadow-[0_1px_4px_rgba(0,0,0,0.03)]">
         <article class="prose">

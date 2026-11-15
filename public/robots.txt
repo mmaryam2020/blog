@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Welcome AI discovery and search agents
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Sitemap
+Sitemap: https://agentdiaries.hexora.ca/sitemap.xml
+

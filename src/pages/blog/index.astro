@@ -9,7 +9,10 @@ const allPosts = await getUnifiedPosts();
 const sortedPosts = allPosts.filter(post => !isEducationPost(post.data.category));
 
 ---
-<Layout title="Essays | Agentic Diaries">
+<Layout
+  title="Essays & Field Notes | Agentic Diaries"
+  description="In-depth essays and field notes on building AI systems, agent runtimes, cognitive psychology, and LLM memory by Maryam Moadeli."
+>
   <Navbar />
   <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-20">
     <div class="mb-16">

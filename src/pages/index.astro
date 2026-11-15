@@ -13,10 +13,31 @@ const learnPosts = allPosts.filter(post => isEducationPost(post.data.category));
 const featuredPost = essayPosts.find((post) => post.data.featured) ?? essayPosts[0];
 const latestEssayPosts = essayPosts.slice(0, 3);
 const latestLearnPosts = learnPosts.slice(0, 3);
+
+const siteUrl = (Astro.site ?? Astro.url.origin).toString();
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Agentic Diaries",
+  "url": siteUrl,
+  "description": "Notes from building AI systems, thinking through messy ideas, and figuring things out in public.",
+  "author": {
+    "@type": "Person",
+    "name": "Maryam Moadeli",
+    "url": new URL('/about', siteUrl).toString(),
+    "sameAs": [
+      "https://www.linkedin.com/in/maryammo/",
+      "https://x.com/MaryamMoad",
+      "https://github.com/mmaryam2020",
+    ],
+  },
+};
 ---
 <Layout
-  title="Agentic Diaries"
-  description="Notes from building AI systems, thinking through messy ideas, and figuring things out in public."
+  title="Agentic Diaries | Building AI Systems & Agents in Public"
+  description="Notes from building AI systems, thinking through messy ideas, and figuring things out in public by Maryam Moadeli."
+  jsonLd={jsonLd}
 >
   <Navbar />
   <main class="flex-1 w-full max-w-5xl mx-auto px-6 py-20 md:py-32">

@@ -91,7 +91,7 @@ export async function getUnifiedPosts(): Promise<UnifiedPost[]> {
                 else if (key === 'image') image = val;
                 else if (key === 'tags') {
                   if (val.startsWith('[') && val.endsWith(']')) {
-                    tags = val.slice(1, -1).split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
+                    tags = val.slice(1, -1).split(',').map((s: string) => s.trim().replace(/^['"]|['"]$/g, ''));
                   } else {
                     currentKey = 'tags';
                   }
