@@ -1,0 +1,80 @@
+---
+title: "AI agents need to sleep too"
+description: "Your brain sorts the day while you sleep. AI agents never do. Why agents are getting a night shift called dreaming, and what Anthropic's research shows it fixes."
+date: "2026-11-15"
+tags: ["ai-agents", "memory", "dreaming", "moka"]
+category: "episodes"
+featured: true
+image: "/images/mokas-night-shift-for-agent-memory.jpg"
+---
+
+**Your brain does its filing while you sleep.**
+
+During the day, you take in everything. At night, your brain replays some of it, keeps what matters, and lets the rest go. That's why you remember what a friend told you yesterday, but not what you ate for lunch three Tuesdays ago.
+
+AI agents never sleep.
+
+They write things down in the moment and never go back to check. A passing comment gets the same weight as a real decision. Forever.
+
+I ran into this with Moka, my little personal agent. I vented to her about someone once, and that person kept showing up in my summaries until I wrote her a rule to stop. ([I wrote about it here](/blog/i-gave-my-ai-perfect-memory-that-was-a-mistake).)
+
+The rule worked. But it was a patch. What Moka was missing was a night.
+
+![Moka's Night Shift for Agent Memory](/images/mokas-night-shift-for-agent-memory.jpg)
+
+### Agents are getting a night shift
+
+This isn't a brand-new idea.
+
+In 2025, Letta called it "sleep-time compute": let the agent use its idle time to reorganize what it knows. This year, OpenClaw and Anthropic both shipped features called "dreaming." The idea is the same everywhere. While the agent isn't busy, a background job rereads what happened and tidies up its memory.
+
+What's new is that Anthropic just published the clearest picture I've seen of how the pieces fit together.
+
+### Five layers, not one big box
+
+When most of us build memory for a personal agent, we dump everything into a folder of notes and call it done. Anthropic splits it into layers:
+
+1. **Transcripts.** The full raw log of everything that happened. Searchable, never edited.
+2. **Session notes.** Quick notes the agent writes while working. "This failed, try something else."
+3. **The wiki.** Organized pages built up over time, linked together.
+4. **Always-loaded context.** The small set of things the agent sees at the start of every session.
+5. **Dreaming.** An offline pass that rereads the transcripts and fixes the layers above. The night shift.
+
+The trick is the bottom layer. Because the raw log is never touched, there's always something true to check the notes against.
+
+### What the night shift catches
+
+Two of Anthropic's tests made it click for me.
+
+In one, an agent wrote itself a note: "Mt Moon DONE." It wasn't done. The agent trusted its own note and kept acting on it, until a dreaming pass checked it against the transcript and fixed it.
+
+In another, one model playing Pokémon wrote 413 memory files and earned 1 badge. A newer one wrote about 10 files and earned 4.
+
+More memory wasn't better memory. It just buried the useful parts.
+
+### Let's zoom out
+
+In the moment, nobody can tell a lasting preference from a bad night. Not Moka. Not me. You need distance.
+
+That's what sleep gives us, and what a dreaming pass gives an agent: a look across many days instead of one conversation. It can see that a "done" wasn't done, or that I never brought that person up again, and quietly fix it.
+
+### What I'm trying next
+
+I'm starting small. Every night, a job rereads the day's chats with Moka and checks them against her notes. Nothing becomes a "fact about Maryam" unless it shows up more than once, or I say it straight out.
+
+The first test: delete my "never mention them" rule and see if the night shift can do that job on its own.
+
+For now, she leaves me the changes to look over with my coffee. Letting an agent rewrite its own memory while I sleep means it can fix mistakes on its own. It also means it could quietly delete something I wanted to keep.
+
+Storing is easy. Deciding what to keep, fix, and forget is the real work. Humans do it in their sleep.
+
+Agents need a version of that too.
+
+Would you let your AI edit its own memory overnight? Or would you want to see the changes in the morning?
+
+**Sources**
+
+- Anthropic, "The components of agent memory" (Nov 6, 2026): [https://www.anthropic.com/research/components-of-agent-memory](https://www.anthropic.com/research/components-of-agent-memory)
+- Letta, "Sleep-time Compute" (Apr 2025): [https://letta.com/blog/sleep-time-compute](https://letta.com/blog/sleep-time-compute)
+- Agentic Diaries, "I gave my AI perfect memory. That was a mistake." (Oct 8, 2026): [/blog/i-gave-my-ai-perfect-memory-that-was-a-mistake](https://agentdiaries.hexora.ca/blog/i-gave-my-ai-perfect-memory-that-was-a-mistake)
+
